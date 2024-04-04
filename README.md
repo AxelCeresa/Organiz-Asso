@@ -68,13 +68,13 @@ Avec les champs _id de type `ObjectId`, name de type `String` et acces une liste
 **messages** : 
 ```json
 {
-   "_id" : "objectId('66047529ae1a22ee065d71ec')",
+   "_id" : "objectId('66047529ae1a22ee065d71ec')", // Pas obligatoire à mettre dans le message
    "forumId" : "6602f9c2391f27f96e5f84e4",
-   "authorId" : "6602f45a954659e97353c359",
-   "authorName" : "Dupond",
-   "date" : "2024-03-27T19:36:09.108+00:00",
+   "userId" : "6602f45a954659e97353c359",
+   "userName" : "Dupond", 
+   "date" : "2024-03-27T19:36:09.108+00:00", // Pas obligatoire à mettre dans le message
    "text" : "Ceci est un premier message",
-   "modified" : false
+   "modified" : false // Pas obligatoire à mettre dans le message
 }
 ```
 Avec les champs _id de type `ObjectId`, forumId, authorId, authorName et text de type `String`. Le champs date est de type `Date` et modified est de type `Boolean`.  
