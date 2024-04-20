@@ -1,10 +1,7 @@
-const { connectToMongoDB, closeMongoDBConnection } = require('../config/db');
 const Comment = require("../entities/comment.js");
-
 
 module.exports.postComment = async (req, res) => {
   const { messageId, userId, userName, text } = req.body;
-  let db = null;
 
   if (!messageId || !userId || !userName || !text) {
     res.status(400).json({ message: "Requête invalide : Tous les champs doivent être remplit" });
@@ -12,8 +9,7 @@ module.exports.postComment = async (req, res) => {
   }
 
   try {
-    db = await connectToMongoDB();
-    const db_comments = db.collection('comments');
+    const db_comments = req.db.collection('comments');
     const comments = new Comment.default(db_comments);
 
     await comments.create(messageId, userId, userName, text)
@@ -26,20 +22,14 @@ module.exports.postComment = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.getAllMessagesComments = async (req, res) => {
-  let db = null;
   let messageId = req.params.id;
 
   try {
-    db = await connectToMongoDB();
-    const db_comments = db.collection('comments');
+    const db_comments = req.db.collection('comments');
     const comments = new Comment.default(db_comments);
 
     await comments.getAllfromMessage(messageId)
@@ -52,20 +42,14 @@ module.exports.getAllMessagesComments = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.commentInfo = async (req, res) => {
-  let db = null;
   let commentId = req.params.id;
 
   try {
-    db = await connectToMongoDB();
-    const db_comments = db.collection('comments');
+    const db_comments = req.db.collection('comments');
     const comments = new Comment.default(db_comments);
 
     await comments.get(commentId)
@@ -78,21 +62,14 @@ module.exports.commentInfo = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.deleteComment = async (req, res) => {
-  let db = null;
-  // Récupère l'id passé en paramettre
   let commentId = req.params.id;
 
   try {
-    db = await connectToMongoDB();
-    const db_comments = db.collection('comments');
+    const db_comments = req.db.collection('comments');
     const comments = new Comment.default(db_comments);
 
     // Si l'id du forum n'existe pas
@@ -111,22 +88,15 @@ module.exports.deleteComment = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.modifieComment = async (req, res) => {
-  let db = null;
-  // Récupère l'id passé en paramettre
   let commentId = req.params.id;
   let { text } = req.body;
 
   try {
-    db = await connectToMongoDB();
-    const db_comments = db.collection('comments');
+    const db_comments = req.db.collection('comments');
     const comments = new Comment.default(db_comments);
 
     // Si l'id du forum n'existe pas
@@ -145,9 +115,5 @@ module.exports.modifieComment = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};

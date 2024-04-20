@@ -1,0 +1,24 @@
+.demande-infos-container {
+  border-bottom: 1px solid grey;
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.demande-infos-container .infos {
+  display: flex;
+  margin-right: auto;
+  align-items: center;
+}
+
+.demande-infos-container .infos h3{
+  text-align: left;
+  width: 150px;
+}
+
+.demande-infos-container .infos p{
+}
+
+.demande-infos-container .options {
+  display: flex;
+  margin-left: auto;
+}

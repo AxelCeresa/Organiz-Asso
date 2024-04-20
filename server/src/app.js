@@ -43,23 +43,25 @@ app.use(session({
   })
 }));
 
-
-
-const { checkUser, requireAuth } = require('./middleware/auth.middleware');
-// Middleware de verification de session
-//app.get('*', checkUser);
-//app.get('/uid', requireAuth, (req, res) => {
-//  res.status(200).json({ userid: res.locals.user._id.toString() });
-//});
-
-
+const { connectDBMiddleware } = require('./middleware/db.middleware');
 
 // Fait appel à l'api pour gérer les requçetes
 const api = require('./api.js')
-app.use('/api', api.default());
+app.use('/api', connectDBMiddleware, api.default());
 
 
-// Démarre le serveur
-app.on('close', () => {
+const { closeMongoDBConnection } = require('./config/db');
+// Gestion de la fermeture du serveur
+process.on('SIGINT', async () => {
+  try {
+    // Fermeture de la connexion à la base de données avant de quitter
+    await closeMongoDBConnection();
+    console.log('\nConnexion à la base de données fermée. Arrêt du serveur.');
+    process.exit(0);
+  } catch (error) {
+    console.error('Erreur lors de la fermeture du serveur:', error);
+    process.exit(1);
+  }
 });
+
 module.exports = app;

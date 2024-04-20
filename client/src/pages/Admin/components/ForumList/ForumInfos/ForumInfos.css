@@ -31,3 +31,7 @@
 .forum-infos-container .error{
   color: red;
 }
+
+.test {
+  display: flex;
+}

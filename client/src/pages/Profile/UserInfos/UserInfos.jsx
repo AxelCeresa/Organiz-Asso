@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import userImg from '../../../assets/img/user-placeholder-image.png'
 import './UserInfos.css'
 
-function UserInfos(props) {
-  const userName = props.userName;
-  const prenom = 'John';
-  const nom = 'Doe';
-  const dateCreation = '10-02-2019';
-  const statut = 'Membre'
+function UserInfos({ user }) {
+  const userName = user.login;
+  const prenom = user.firstname;
+  const nom = user.lastname;
+  const dateCreation = user.date;
+  const statut = user.status;
   const img = "img/user-placeholder-image.png";
 
   return (

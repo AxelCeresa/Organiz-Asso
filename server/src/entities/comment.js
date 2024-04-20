@@ -102,10 +102,10 @@ class Comment {
           return;
         }
 
-        const comments = await this.db.find({ messageId: messageId }).toArray();
+        const comments = await this.db.find({ messageId: messageId }).sort({ date: -1 }).toArray();
 
-        if (!comments || comments.length === 0) {
-          reject({ status: 500, message: "Erreur : Pas de commentaires pour ce message dans la DataBase." })
+        if (!comments) {
+          reject({ status: 500, message: "Erreur : Echec de la requête." })
         } else { resolve(comments) }
 
       } catch (error) {

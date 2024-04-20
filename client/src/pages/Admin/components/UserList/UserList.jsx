@@ -1,27 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import UserInfos from './UserInfos/UserInfos';
-import axios from 'axios';
 import './UserList.css';
 
-function UserList({ isOpen, onClose, onSubmit}) {
-  const [userList, setUserList] = useState([]);
-
-  const getUserList = async () => {
-    await axios.get('http://localhost:4000/api/user')
-      .then((res) => setUserList(res.data))
-      .catch((err) => console.log(err));
-  }
-
-
-  useEffect(() => {
-  const timer = setTimeout(() => {
-    getUserList();
-  }, 800);
-
-  return () => clearTimeout(timer);
-}, []);
-
-
+function UserList({ isOpen, onClose, onSubmit, userList, getUserList}) {
   if (!isOpen) return null;
 
   return (
@@ -31,9 +12,13 @@ function UserList({ isOpen, onClose, onSubmit}) {
           <h2>Liste des utilisateurs</h2>
           <button onClick={onClose}>x</button>
         </div>
-        {userList.map((user, index) => (
-          <UserInfos key={index} user={user} getUser={getUserList} />
-        ))}
+        {userList.length === 0 ? (
+          <p>Aucuns utilisateurs</p>
+        ) : (
+          userList.map((user, index) => (
+            <UserInfos key={index} user={user} getUser={getUserList} />
+          ))
+        )}
       </div>
     </div>
   );

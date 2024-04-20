@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './UserInfos.css';
 
-function UserInfos(props) {
+function UserInfos({ user, getUser }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [status, setStatus] = useState(props.user.status);
-  const [editedStatus, setEditedStatus] = useState(props.user.status);
+  const [status, setStatus] = useState(user.status);
+  const [editedStatus, setEditedStatus] = useState(user.status);
 
   const [error, setError] = useState('');
 
 
-  const userName = props.user.login;
+  const userName = user.login;
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -23,17 +23,13 @@ function UserInfos(props) {
     if (status === editedStatus) {
       setError('');
     } else {
-      await axios.patch(`http://localhost:4000/api/user/status/${props.user._id}`, { status: editedStatus })
+      await axios.patch(`http://localhost:4000/api/user/status/${user._id}`, { status: editedStatus })
         .then((res) => {
           setStatus(editedStatus);
           setError('');
-          props.getUser();
+          getUser();
         })
-        .catch((err) => {
-          if (err.response.data.status === 409){
-            setError('Le status d\'un admin peut pas être modifié')
-          } else { console.log(err) }
-        });
+        .catch((err) => console.log(err));
     }
   };
 
@@ -44,14 +40,14 @@ function UserInfos(props) {
 
 
   const handleDelete = async () => {
-    await axios.delete(`http://localhost:4000/api/user/${props.user._id}`)
+    await axios.delete(`http://localhost:4000/api/user/${user._id}`)
       .then((res) => {
         setError('');
-        props.getUser();
+        getUser();
       })
       .catch((err) => {
         if (err.response.data.status === 409){
-          setError('Le user ne peut pas être supprimé')
+          setError('Un admin ne peut pas être supprimé')
         } else { console.log(err) }
       });
   };

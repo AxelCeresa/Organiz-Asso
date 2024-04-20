@@ -6,8 +6,9 @@ const forumsRoutes = require('./routes/forum.routes');
 const messagesRoutes = require('./routes/message.routes');
 const commentsRoutes = require('./routes/comment.routes');
 
+const { checkUser, requireAuth } = require('./middleware/auth.middleware');
 
-function init() {
+function init(db) {
   // Middleware de logging
   router.use((req, res, next) => {
     if (req.method !== "OPTIONS"){
@@ -18,12 +19,18 @@ function init() {
   });
 
 
+  // Middleware de verification de session
+  router.get('*', checkUser);
+  router.get('/uid', requireAuth, (req, res) => {
+    res.status(200).json({ userid: res.locals.user._id.toString() });
+  });
+
+
   // Routes
   router.use('/user', usersRoutes);
   router.use('/forum', forumsRoutes);
   router.use('/message', messagesRoutes);
   router.use('/comment', commentsRoutes);
-
 
   return router;
 }

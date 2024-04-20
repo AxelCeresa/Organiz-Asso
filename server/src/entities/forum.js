@@ -52,7 +52,7 @@ class Forums {
             reject({ status: 500, message: "Erreur : Echec de la suppression du forum " + forumid });
           }
         } else {
-          reject({ status: 409, message: "Erreur : Forum " + forumid + " ne peut pas être supprimé." });
+          reject({ status: 409, message: "Erreur : Le forum ne peut pas être supprimé." });
         }
       } catch (error) {
         reject(error);
@@ -144,7 +144,7 @@ class Forums {
           reject({status: 400, message: "Erreur : ID inconnu = " + forumid });
         } else {
           if(forum.name === 'Forum membres' || forum.name === 'Forum admin') {
-            reject({ status: 409, message: "Erreur : Le nom du forum " + forumid + " ne peut pas être modifié." });
+            reject({ status: 409, message: "Erreur : Le nom du forum ne peut pas être modifié." });
             return;
           }
           const forum2 = await this.db.findOne({ name: name });

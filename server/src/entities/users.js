@@ -16,11 +16,13 @@ class Users {
           password: cryptedPassword,
           lastname: lastname,
           firstname: firstname,
-          status: 'member' // Initialisation du statut à 'member'
+          status: 'member', // Initialisation du statut à 'member'
+          date: new Date(),
+          verified: false
         });
 
         if(! result.acknowledged) {
-          reject({ status: 500, message: "Failed to create user"});
+          reject({ status: 500, message: "Erreur : Echec de la création du user"});
         } else {
           resolve({
             status:201,
@@ -40,24 +42,24 @@ class Users {
         // Vérifier si userId a le bon format
         const userIdRegex = /^[0-9a-fA-F]{24}$/;
         if (!userIdRegex.test(userid)) {
-          reject({ status: 400, mesmessagesage: "Erreur : ID unknown = " + userid });
+          reject({ status: 400, mesmessagesage: "Erreur : ID inconnu = " + userid });
           return;
         }
 
         const user = await this.db.findOne({ _id: new ObjectId(userid) });
-        if (!user) { reject({ status: 400, message: "Erreur : ID unknown = " + userid }) }
+        if (!user) { reject({ status: 400, message: "Erreur : ID inconnu = " + userid }) }
 
         // Vérifier si l'utilisateur peut être supprimé (ex : statut différent d'admin)
         if (user.status !== 'admin') {
           const result = await this.db.deleteOne({ _id: new ObjectId(userid) });
 
           if (result.deletedCount === 1) {
-            resolve({ status: 200, message: "User " + userid + " successfully deleted." });
+            resolve({ status: 200, message: "User " + userid + " supprimé avec succès." });
           } else {
-            reject({ status:500, message: "Failed to delete user " + userid });
+            reject({ status: 500, message: "Erreur : Echec de la suppression du user " + userid });
           }
         } else {
-          reject({ status:400, message: "User " + userid + " cannot be deleted because of his status." });
+          reject({ status: 409, message: "User " + userid + " ne peut pas être supprimé." });
         }
       } catch (error) {
         reject(error);
@@ -71,7 +73,7 @@ class Users {
         // Vérifier si userId a le bon format
         const userIdRegex = /^[0-9a-fA-F]{24}$/;
         if (!userIdRegex.test(userid)) {
-          reject({ status: 400, message: "Erreur : ID unknown = " + userid });
+          reject({ status: 400, message: "Erreur : ID inconnu = " + userid });
           return;
         }
 
@@ -80,7 +82,7 @@ class Users {
           { password: false }
         );
         if (!user) {
-          reject({ status:400,  message: "Erreur : ID unknown = " + userid });
+          reject({ status: 400,  message: "Erreur : ID inconnu = " + userid });
         } else { resolve(user) }
 
       } catch (error) {
@@ -94,15 +96,58 @@ class Users {
       try {
         // Vérifier si l'utilisateur existe dans la base de données
         const users = await this.db.find(
-          {},
+          { verified: true },
           { password: false }
         ).toArray();
 
-        if (!users || users.length === 0) {
-          reject({ status: 500, message: "Erreur : No users in DataBase." })
+        if (!users) {
+          reject({ status: 500, message: "Erreur : Echec de la requête." })
         } else { resolve(users) }
 
       } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  getNotVerifiedUsers() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Vérifier si l'utilisateur existe dans la base de données
+        const users = await this.db.find(
+          { verified: false },
+          { password: false }
+        ).toArray();
+
+        if (!users) {
+          reject({ status: 500, message: "Erreur : Echec de la requête." })
+        } else { resolve(users) }
+
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  isVerified(userid) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Vérifier si userId a le bon format
+        const userIdRegex = /^[0-9a-fA-F]{24}$/;
+        if (!userIdRegex.test(userid)) {
+          reject({ status: 400, message: "Erreur : ID inconnu = " + userid });
+          return;
+        }
+
+        const user = await this.db.findOne({ _id: new ObjectId(userid) });
+
+        if (!user || user.verified === false) {
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+
+      } catch(error) {
         reject(error);
       }
     });
@@ -115,9 +160,9 @@ class Users {
         const user = await this.db.findOne({ login: login });
 
         if (!user) {
-          reject({ status: 400, message: "Erreur : Login unknown = " + login });
+          resolve(false);
         } else {
-          resolve({ status: 409, message: "Erreur : Login déjà utilisté"});
+          resolve(true);
         }
 
       } catch(error) {
@@ -156,7 +201,7 @@ class Users {
           const auth = await bcrypt.compare(password, user.password);
           if (auth) { resolve(user._id.toString()) }
         }
-        reject({status: 403, message: "Login et/ou mot de passe invalide(s)"});
+        resolve(null);
       } catch (error) {
         reject(error);
       }
@@ -169,13 +214,13 @@ class Users {
         // Vérifier si userId a le bon format
         const userIdRegex = /^[0-9a-fA-F]{24}$/;
         if (!userIdRegex.test(userid)) {
-          reject({ status: 400, message: "Erreur : ID unknown = " + userid });
+          reject({ status: 400, message: "Erreur : ID inconnu = " + userid });
           return;
         }
 
         const user = await this.db.findOne({ _id: new ObjectId(userid) });
         if(!user) {
-          reject({status: 400, message: "Erreur : ID unknown = " + userid });
+          reject({status: 400, message: "Erreur : ID inconnu = " + userid });
         } else {
           const status = user.status;
           let new_status = "";
@@ -187,7 +232,35 @@ class Users {
             { $set: { status: new_status }}
           );
 
-          resolve({ status: 200, message: "User " + userid + " status successfully changed to " + new_status});
+          resolve({ status: 200, message: "Status du user " + userid + " changé avec succès en " + new_status});
+        }
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  verifieUser(userid) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Vérifier si userId a le bon format
+        const userIdRegex = /^[0-9a-fA-F]{24}$/;
+        if (!userIdRegex.test(userid)) {
+          reject({ status: 400, message: "Erreur : ID inconnu = " + userid });
+          return;
+        }
+
+        const user = await this.db.findOne({ _id: new ObjectId(userid) });
+        if(!user) {
+          reject({status: 400, message: "Erreur : ID inconnu = " + userid });
+        } else {
+          const verif = user.verified;
+          const result = await this.db.updateOne(
+            { _id: new ObjectId(userid) },
+            { $set: { verified: true }}
+          );
+
+          resolve({ status: 200, message: "User " + userid + " vérifié"});
         }
       } catch (error) {
         reject(error);

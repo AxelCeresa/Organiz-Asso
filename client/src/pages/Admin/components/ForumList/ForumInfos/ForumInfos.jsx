@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './ForumInfos.css';
 
-function ForumInfos(props) {
+function ForumInfos({ forum, getForum }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [acces, setAcces] = useState(props.forum.acces);
-  const [editedAccess, setEditedAccess] = useState(props.forum.acces);
+  const [acces, setAcces] = useState(forum.acces);
+  const [editedAccess, setEditedAccess] = useState(forum.acces);
 
   const [error, setError] = useState('');
 
 
-  const name = props.forum.name;
+  const [name, setName] = useState(forum.name);
+  const [editedName, setEditedName] = useState(forum.name)
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -20,18 +21,33 @@ function ForumInfos(props) {
 
   const handleConfirm = async () => {
     setIsEditing(false);
-    if (acces === editedAccess) {
-      setError('');
-    } else {
-      await axios.patch(`http://localhost:4000/api/forum/acces/${props.forum._id}`, { acces: editedAccess })
+    if (acces !== editedAccess) {
+      await axios.patch(`http://localhost:4000/api/forum/acces/${forum._id}`, { acces: editedAccess })
         .then((res) => {
           setAcces(editedAccess);
           setError('');
-          props.getForum();
+          getForum();
         })
         .catch((err) => {
           if (err.response.data.status === 409){
-            setError('Les accès au forum ne peuvent pas être modifiés')
+            setError('Les accès au forum ne peuvent pas être modifiés');
+            setEditedAccess(acces);
+          } else { console.log(err) }
+        });
+    }
+
+
+    if (name !== editedName) {
+      await axios.patch(`http://localhost:4000/api/forum/name/${forum._id}`, { name: editedName })
+        .then((res) => {
+          setName(editedName);
+          setError('');
+          getForum();
+        })
+        .catch((err) => {
+          if (err.response.data.status === 409){
+            setError(err.response.data.message);
+            setEditedName(name);
           } else { console.log(err) }
         });
     }
@@ -47,10 +63,10 @@ function ForumInfos(props) {
 
 
   const handleDelete = async () => {
-    await axios.delete(`http://localhost:4000/api/forum/${props.forum._id}`)
+    await axios.delete(`http://localhost:4000/api/forum/${forum._id}`)
       .then((res) => {
         setError('');
-        props.getForum();
+        getForum();
       })
       .catch((err) => {
         if (err.response.data.status === 409){
@@ -61,27 +77,33 @@ function ForumInfos(props) {
 
   return (
     <div className="forum-infos-container">
-      <div className="infos">
-        <div className="name">
-          <h3>{name}</h3>
-        </div>
-        <p>Accès : </p>
         {isEditing ? (
-        <div className="checkboxes">
-          <input type="checkbox" id="member" checked={editedAccess.includes("member")} onChange={() => handleCheckboxChange("member")} />
-          <label htmlFor="member">Member</label>
-          <input type="checkbox" id="admin" checked={editedAccess.includes("admin")} onChange={() => handleCheckboxChange("admin")} />
-          <label htmlFor="admin">Admin</label>
+          <div className="infos">
+            <div className="name">
+              <input type="text" value={editedName} onChange={(e) => setEditedName(e.target.value)}/>
+            </div>
+            <p>Accès : </p>
+            <div className="checkboxes">
+              <input type="checkbox" id="member" checked={editedAccess.includes("member")} onChange={() => handleCheckboxChange("member")} />
+              <label htmlFor="member">Member</label>
+              <input type="checkbox" id="admin" checked={editedAccess.includes("admin")} onChange={() => handleCheckboxChange("admin")} />
+              <label htmlFor="admin">Admin</label>
+            </div>
         </div>
       ) : (
-        <div className="checkboxes">
-          <input type="checkbox" id="member" checked={acces.includes("member")} disabled />
-          <label htmlFor="member">Member</label>
-          <input type="checkbox" id="admin" checked={acces.includes("admin")} disabled />
-          <label htmlFor="admin">Admin</label>
+        <div className="infos">
+          <div className="name">
+            <h3>{name}</h3>
+          </div>
+          <p>Accès : </p>
+          <div className="checkboxes">
+            <input type="checkbox" id="member" checked={acces.includes("member")} disabled />
+            <label htmlFor="member">Member</label>
+            <input type="checkbox" id="admin" checked={acces.includes("admin")} disabled />
+            <label htmlFor="admin">Admin</label>
+          </div>
         </div>
       )}
-      </div>
 
       <p className="error">{error}</p>
 

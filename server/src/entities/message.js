@@ -103,7 +103,7 @@ class Message {
   getAll() {
     return new Promise(async (resolve, reject) => {
       try {
-        const messages = await this.messages_db.find().toArray();
+        const messages = await this.messages_db.find().sort({ date: -1 }).toArray();
 
         if (!messages || messages.length === 0) {
           reject({ status: 500, message: "Erreur : Pas de messages dans la DataBase." })
@@ -125,10 +125,10 @@ class Message {
           return;
         }
 
-        const messages = await this.messages_db.find({ forumId: forumId }).toArray();
+        const messages = await this.messages_db.find({ forumId: forumId }).sort({ date: -1 }).toArray();
 
-        if (!messages || messages.length === 0) {
-          reject({ status: 500, message: "Erreur : Pas de messages pour ce forum dans la DataBase." })
+        if (!messages) {
+          reject({ status: 400, message: "Erreur : Echec de la requête." });
         } else { resolve(messages) }
 
       } catch (error) {
@@ -147,7 +147,7 @@ class Message {
           return;
         }
 
-        const messages = await this.messages_db.find({ authorId: userId }).toArray();
+        const messages = await this.messages_db.find({ authorId: userId }).sort({ date: -1 }).toArray();
 
         if (!messages || messages.length === 0) {
           reject({ status: 500, message: "Erreur : Pas de messages pour cet utilisateur dans la DataBase." })

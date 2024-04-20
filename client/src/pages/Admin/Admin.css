@@ -2,7 +2,7 @@
   text-align: center;
 }
 
-.main-content .forum-list{
+.main-content .list{
   text-align: left;
   margin-top: 10px;
   border: 0.1;
@@ -12,22 +12,7 @@
   padding: 20px;
 }
 
-.main-content .user-list{
-  text-align: left;
-  margin-top: 10px;
-  border: 0.1;
-  width: auto;
-  background-color: #f2f2f2;
-  border-radius: 10px;
-  padding: 20px;
-}
-
-.main-content .forum-list:hover{
-  cursor: pointer;
-  background-color: #ccc;;
-}
-
-.main-content .user-list:hover{
+.main-content .list:hover{
   cursor: pointer;
   background-color: #ccc;;
 }

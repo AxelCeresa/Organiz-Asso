@@ -1,22 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ForumInfos from './ForumInfos/ForumInfos';
 import axios from 'axios';
 import './ForumList.css';
 
-function ForumList({ isOpen, onClose}) {
-  const [forumList, setForumList] = useState([]);
-
+function ForumList({ isOpen, onClose, forumList, getForumList }) {
   const [isCreateForum, setIsCreateForum] = useState(false);
   const [forumName, setForumName] = useState('');
   const [access, setAccess] = useState([]);
 
   const [error, setError] = useState('');
-
-  const getForumList = async () => {
-    await axios.get('http://localhost:4000/api/forum')
-      .then((res) => setForumList(res.data))
-      .catch((err) => console.log(err));
-  }
 
   const handleCheckboxChange = (e) => {
     const { value, checked } = e.target;
@@ -57,15 +49,6 @@ function ForumList({ isOpen, onClose}) {
   };
 
 
-  useEffect(() => {
-  const timer = setTimeout(() => {
-    getForumList();
-  }, 400);
-
-  return () => clearTimeout(timer);
-}, []);
-
-
   if (!isOpen) return null;
 
   return (
@@ -75,9 +58,13 @@ function ForumList({ isOpen, onClose}) {
           <h2>Liste des Forums</h2>
           <button onClick={onClose}>x</button>
         </div>
-        {forumList.map((forum, index) => (
-          <ForumInfos key={index} forum={forum} getForum={getForumList} />
-        ))}
+        {forumList.length === 0 ? (
+          <p>Aucuns forums</p>
+        ) : (
+          forumList.map((forum, index) => (
+            <ForumInfos key={index} forum={forum} getForum={getForumList} />
+          ))
+        )}
 
         {isCreateForum
           ? (

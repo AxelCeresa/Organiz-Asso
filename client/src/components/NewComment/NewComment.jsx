@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './NewComment.css';
 
 function NewComment({ isOpen, onClose, onSubmit, userName}) {
+  const [messageContent, setMessageContent] = useState('');
+
+  const handleSubmit = () => {
+    onSubmit(messageContent);
+  }
+
   if (!isOpen) return null;
 
   return (
@@ -11,9 +17,14 @@ function NewComment({ isOpen, onClose, onSubmit, userName}) {
           <h2>Répondre à {userName}</h2>
           <button onClick={onClose}>x</button>
         </div>
-        <textarea className="newComment-input" rows="5" cols="100" placeholder="Écrire un commentaire..." />
+        <textarea className="newComment-input" rows="5" cols="100"
+          placeholder="Écrire un commentaire..."
+          value={messageContent}
+          onChange={(e) => setMessageContent(e.target.value)}
+          required
+        />
         <div className="newComment-buttons">
-          <button onClick={onSubmit}>Envoyer</button>
+          <button onClick={handleSubmit}>Envoyer</button>
         </div>
       </div>
     </div>

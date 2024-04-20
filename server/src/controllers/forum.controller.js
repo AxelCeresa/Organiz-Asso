@@ -1,10 +1,7 @@
-const { connectToMongoDB, closeMongoDBConnection } = require('../config/db');
 const Forums = require("../entities/forum.js");
-
 
 module.exports.createForum = async (req, res) => {
   const { name, acces } = req.body;
-  let db = null;
 
   if (!name || !acces) {
     res.status(400).json({ message: "Requête invalide : Tous les champs doivent être remplit" });
@@ -12,8 +9,7 @@ module.exports.createForum = async (req, res) => {
   }
 
   try {
-    db = await connectToMongoDB();
-    const db_forums = await db.collection("forums");
+    const db_forums = await req.db.collection("forums");
     const forums = new Forums.default(db_forums);
 
     if(await forums.existsName(name)) {
@@ -31,19 +27,12 @@ module.exports.createForum = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.getAllForums = async (req, res) => {
-  let db = null;
-
   try {
-    db = await connectToMongoDB();
-    const db_forums = await db.collection("forums");
+    const db_forums = await req.db.collection("forums");
     const forums = new Forums.default(db_forums);
 
     // Récuprère la liste des forums
@@ -57,21 +46,14 @@ module.exports.getAllForums = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.forumInfos = async (req, res) => {
-  let db = null;
-  // Récupère l'id passé en paramettre
   let forumid = req.params.id;
 
   try {
-    db = await connectToMongoDB();
-    const db_forums = await db.collection("forums");
+    const db_forums = await req.db.collection("forums");
     const forums = new Forums.default(db_forums);
 
     // Si l'id du forum n'existe pas
@@ -91,21 +73,14 @@ module.exports.forumInfos = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.deleteForum = async (req, res) => {
-  let db = null;
-  // Récupère l'id passé en paramettre
   let forumid = req.params.id;
 
   try {
-    db = await connectToMongoDB();
-    const db_forums = await db.collection("forums");
+    const db_forums = await req.db.collection("forums");
     const forums = new Forums.default(db_forums);
 
     // Si l'id du forum n'existe pas
@@ -124,22 +99,15 @@ module.exports.deleteForum = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.changeName = async (req, res) => {
-  let db = null;
-  // Récupère l'id passé en paramettre
   let forumid = req.params.id;
   let { name } = req.body;
 
   try {
-    db = await connectToMongoDB();
-    const db_forums = await db.collection("forums");
+    const db_forums = await req.db.collection("forums");
     const forums = new Forums.default(db_forums);
 
     // Si l'id du forum n'existe pas
@@ -159,22 +127,15 @@ module.exports.changeName = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.changeAcces = async (req, res) => {
-  let db = null;
-  // Récupère l'id passé en paramettre
   let forumid = req.params.id;
   let { acces } = req.body;
 
   try {
-    db = await connectToMongoDB();
-    const db_forums = await db.collection("forums");
+    const db_forums = await req.db.collection("forums");
     const forums = new Forums.default(db_forums);
 
     // Si l'id du user n'existe pas
@@ -194,9 +155,5 @@ module.exports.changeAcces = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};

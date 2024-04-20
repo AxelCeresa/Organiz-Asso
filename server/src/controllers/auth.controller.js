@@ -1,5 +1,4 @@
 const session = require('express-session');
-const { connectToMongoDB, closeMongoDBConnection } = require('../config/db');
 const Users = require("../entities/users.js");
 
 module.exports.register = async (req, res) => {
@@ -10,27 +9,19 @@ module.exports.register = async (req, res) => {
     return;
   }
 
-  let db = null;
-
   try {
-    db = await connectToMongoDB();
-    db_users = await db.collection("users");
+    db_users = await req.db.collection("users");
     const users = new Users.default(db_users);
 
-    // Check si le login est déjà utilisé
-    await users.existsLogin(login)
-      // Si c'est le cas, renvoi une erreur
-      .then((rep) => res.status(409).json(rep))
-      // Sinon on creer le user
-      .catch(async (err) => {
-        if (err.status == 400){
-          await users.create(login, password, lastname, firstname)
-            .then((rep) => res.status(201).send(rep))
-            .catch((err) => res.status(500).send(err));
-        } else {
-          res.status(err.status).json(err)
-        }
-      });
+    // Si le login du user existe déjà
+    if(await users.existsLogin(login)) {
+        res.status(409).json({ status: 409, message: "Erreur : Login déjà utilisté" });
+        return;
+    }
+
+    await users.create(login, password, lastname, firstname)
+      .then((rep) => res.status(201).send(rep))
+      .catch((err) => res.status(500).send(err));
 
   } catch (err) {
     // Toute autre erreur
@@ -38,22 +29,14 @@ module.exports.register = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    // Assure la fermeture de la connexion à MongoDB après utilisation
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
 };
 
 module.exports.login = async (req, res) => {
   const { login, password } = req.body;
 
-  let db = null;
-
   try {
-      db = await connectToMongoDB();
-      db_users = await db.collection("users");
+      db_users = await req.db.collection("users");
       const users = new Users.default(db_users);
 
       // Erreur sur la requête HTTP
@@ -62,21 +45,32 @@ module.exports.login = async (req, res) => {
           return;
       }
 
-      console.log('Checking password ...');
-      await users.checkpassword(login, password)
-        .then(async (rep) => {
-          req.session.userid = rep
-          await req.session.save();
-          res.status(200).json({ status: 200, message: "Login et mot de passe accepté" });
-        })
-        .catch((err) => {
-          if (err.status == 403) {
-            req.session.destroy((err) => { });
-            res.status(403).json(err);
-          } else {
-            res.status(500).json(err);
-          }
-        });
+      let userid = await users.checkpassword(login, password);
+      
+      if (! userid) {
+        // Faux login : destruction de la session et Erreur
+        req.session.destroy((err) => { });
+        res.status(403).json({ status: 403, message: "Erreur : Login et/ou mot de passe invalide" });
+        return;
+      }
+
+      if (! await users.isVerified(userid)) {
+        // Utilisateur non vérifié
+        req.session.destroy((err) => { });
+        res.status(403).json({ status: 403, message: "Erreur : Compte non vérifié par un administrateur" });
+        return;
+      }
+
+      // Crée une session
+      req.session.regenerate(function (err) {
+        if (err) {
+          res.status(500).json({ status: 500, message: "Erreur Interne", details: err });
+        } else {
+          req.session.userid = userid;
+          res.status(200).json({ status: 200, message: "Login et mot de passe acceptés" });
+        }
+      });
+
 
   } catch (err) {
       // Toute autre erreur
@@ -84,10 +78,6 @@ module.exports.login = async (req, res) => {
           message: "Erreur interne",
           details: (err || "Erreur inconnue").toString()
       });
-  } finally {
-    if (db){
-      await closeMongoDBConnection();
-    }
   }
 };
 
@@ -98,17 +88,16 @@ module.exports.logout = async (req, res) => {
       // Détruit la session de l'utilisateur pour le déconnecter
       req.session.destroy((err) => {
         if (err) {
-          console.log('Erreur lors de la déconnection : ', err);
-          res.status(500).json({ status: 500, message: "Erreur interne lors de la déconnection" });
+          res.status(500).json({ status: 500, message: "Erreur interne lors de la déconnection", details: err});
         } else {
           res.cookie('usid', '', { maxAge: 1 });
-          res.status(200).json({ status: 200, message: "Déconnection effectuée" })
+          res.status(200).json({ status: 200, message: "Déconnection effectuée" });
         }
       });
     } else {
       // Si l'utilisateur n'est pas connecté, renvoyer une Erreur
       res.cookie('usid', '', { maxAge: 1 });
-      res.status(401).json({ status: 401, message: "Vous n'êtes pas connecté" });
+      res.status(401).json({ status: 401, message: "Utilisateur non connecté" });
     }
 
   } catch (err) {

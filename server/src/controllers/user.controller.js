@@ -1,18 +1,14 @@
-const { connectToMongoDB, closeMongoDBConnection } = require('../config/db');
 const Users = require("../entities/users.js");
 
-
 module.exports.getAllUsers = async (req, res) => {
-  let db = null;
   try {
-    db = await connectToMongoDB();
-    db_users = await db.collection("users");
+    db_users = await req.db.collection("users");
     const users = new Users.default(db_users);
 
     // Récuprère la liste des users
     await users.getAll()
       .then((rep) => res.status(200).json(rep))
-      .catch((err) => res.status(500).json(err))
+      .catch((err) => res.status(err.status).json(err))
 
   } catch (err) {
     // Toute autre erreur
@@ -20,32 +16,25 @@ module.exports.getAllUsers = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    // Assure la fermeture de la connexion à MongoDB après utilisation
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.userInfos = async (req, res) => {
   // Récupère l'id passé en paramettre
   let userID = req.params.id;
-  let db = null;
-
   try {
-    db = await connectToMongoDB();
-    const db_users = await db.collection('users');
+    const db_users = await req.db.collection('users');
     const users = new Users.default(db_users);
 
-    // Check si le user existe
-    await users.existsId(userID)
-      // Transmet les infos du user
-      .then(async (rep) => {
-        await users.get(userID)
-          .then((rep) => res.status(200).json(rep))
-          .catch((err) => res.status(err.status).json(err));
-      })
+    // Si l'id du user n'existe pas
+    if(! await users.existsId(userID)) {
+        res.status(400).json({ status: 400, message: "ID inconnu :" + userID });
+        return;
+    }
+
+    // Id correct
+    await users.get(userID)
+      .then((rep) => res.status(200).json(rep))
       .catch((err) => res.status(err.status).json(err));
 
   } catch (err) {
@@ -54,32 +43,25 @@ module.exports.userInfos = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    // Assure la fermeture de la connexion à MongoDB après utilisation
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.deleteUser = async (req, res) => {
   // Récupère l'id passé en paramettre
   let userID = req.params.id;
-  let db = null;
-
   try {
-    db = await connectToMongoDB();
-    const db_users = await db.collection("users");
+    const db_users = await req.db.collection("users");
     const users = new Users.default(db_users);
 
-    // Check si le user existe
-    await users.existsId(userID)
-      // Delete le user
-      .then(async (rep) => {
-        await users.delete(userID)
-          .then((rep) => res.status(200).json(rep))
-          .catch((err) => res.status(err.status).json(err));
-      })
+    // Si l'id du user n'existe pas
+    if(! await users.existsId(userID)) {
+        res.status(400).json({ status: 400, message: "ID inconnu :" + userID });
+        return;
+    }
+
+    // Id correct
+    await users.delete(userID)
+      .then((rep) => res.status(200).json(rep))
       .catch((err) => res.status(err.status).json(err));
 
   } catch (err) {
@@ -88,31 +70,25 @@ module.exports.deleteUser = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    // Assure la fermeture de la connexion à MongoDB après utilisation
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.switchUserStatus = async (req, res) => {
   // Récupère l'id passé en paramettre
   let userID = req.params.id;
-  let db = null;
-
   try {
-    db = await connectToMongoDB();
-    const db_users = await db.collection('users');
+    const db_users = await req.db.collection('users');
     const users = new Users.default(db_users);
 
-    // Check si le user existe
-    await users.existsId(userID)
-      .then(async (rep) => {
-        // Change le status du user dans la bd
-        await users.switchStatus(userID)
-          .then((rep) => res.status(200).json(rep))
-      })
+    // Si l'id du user n'existe pas
+    if(! await users.existsId(userID)) {
+        res.status(400).json({ status: 400, message: "ID inconnu :" + userID });
+        return;
+    }
+
+    // Id correct
+    await users.switchStatus(userID)
+      .then((rep) => res.status(200).json(rep))
       .catch((err) => res.status(err.status).json(err));
 
   } catch (err) {
@@ -121,10 +97,51 @@ module.exports.switchUserStatus = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    // Assure la fermeture de la connexion à MongoDB après utilisation
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
+
+module.exports.verifieUser = async (req, res) => {
+  // Récupère l'id passé en paramettre
+  let userID = req.params.id;
+  try {
+    const db_users = await req.db.collection('users');
+    const users = new Users.default(db_users);
+
+    // Si l'id du user n'existe pas
+    if(! await users.existsId(userID)) {
+        res.status(400).json({ status: 400, message: "ID inconnu :" + userID });
+        return;
+    }
+
+    // Id correct
+    await users.verifieUser(userID)
+      .then((rep) => res.status(200).json(rep))
+      .catch((err) => res.status(err.status).json(err));
+
+  } catch (err) {
+    // Toute autre erreur
+    res.status(500).json({
+        message: "Erreur interne",
+        details: (err || "Erreur inconnue").toString()
+    });
+  }
+};
+
+module.exports.getNotVerifiedUsers = async (req, res) => {
+  try {
+    db_users = await req.db.collection("users");
+    const users = new Users.default(db_users);
+
+    // Récuprère la liste des users
+    await users.getNotVerifiedUsers()
+      .then((rep) => res.status(200).json(rep))
+      .catch((err) => res.status(err.status).json(err))
+
+  } catch (err) {
+    // Toute autre erreur
+    res.status(500).json({
+        message: "Erreur interne",
+        details: (err || "Erreur inconnue").toString()
+    });
+  }
+};

@@ -1,10 +1,7 @@
-const { connectToMongoDB, closeMongoDBConnection } = require('../config/db');
 const Message = require("../entities/message.js");
-
 
 module.exports.postMessage = async (req, res) => {
   const { forumId, userId, userName, text } = req.body;
-  let db = null;
 
   if (!forumId || !userId || !userName || !text) {
     res.status(400).json({ message: "Requête invalide : Tous les champs doivent être remplit" });
@@ -12,8 +9,7 @@ module.exports.postMessage = async (req, res) => {
   }
 
   try {
-    db = await connectToMongoDB();
-    const messages = new Message.default(db);
+    const messages = new Message.default(req.db);
 
     await messages.create(forumId, userId, userName, text)
       .then((rep) => res.status(201).send(rep))
@@ -25,19 +21,12 @@ module.exports.postMessage = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.getAllMessages = async (req, res) => {
-  let db = null;
-
   try {
-    db = await connectToMongoDB();
-    const messages = new Message.default(db);
+    const messages = new Message.default(req.db);
 
     await messages.getAll()
       .then((rep) => res.status(200).json(rep))
@@ -49,21 +38,14 @@ module.exports.getAllMessages = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.getAllForumMessages = async (req, res) => {
-  let db = null;
-  // Récupère l'id passé en paramettre
   let forumId = req.params.id;
 
   try {
-    db = await connectToMongoDB();
-    const messages = new Message.default(db);
+    const messages = new Message.default(req.db);
 
     await messages.getAllfromForum(forumId)
       .then((rep) => res.status(200).json(rep))
@@ -75,21 +57,14 @@ module.exports.getAllForumMessages = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.getAllUserMessages = async (req, res) => {
-  let db = null;
-  // Récupère l'id passé en paramettre
   let userId = req.params.id;
 
   try {
-    db = await connectToMongoDB();
-    const messages = new Message.default(db);
+    const messages = new Message.default(req.db);
 
     await messages.getAllfromUser(userId)
       .then((rep) => res.status(200).json(rep))
@@ -101,20 +76,14 @@ module.exports.getAllUserMessages = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.messageInfo = async (req, res) => {
-  let db = null;
   let messageId = req.params.id;
 
   try {
-    db = await connectToMongoDB();
-    const messages = new Message.default(db);
+    const messages = new Message.default(req.db);
 
     await messages.get(messageId)
       .then((rep) => res.status(200).json(rep))
@@ -126,21 +95,14 @@ module.exports.messageInfo = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.deleteMessage = async (req, res) => {
-  let db = null;
-  // Récupère l'id passé en paramettre
   let messageId = req.params.id;
 
   try {
-    db = await connectToMongoDB();
-    const messages = new Message.default(db);
+    const messages = new Message.default(req.db);
 
     // Si l'id du forum n'existe pas
     if(! await messages.existsId(messageId)) {
@@ -158,22 +120,15 @@ module.exports.deleteMessage = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
 
 module.exports.modifieMessage = async (req, res) => {
-  let db = null;
-  // Récupère l'id passé en paramettre
   let messageId = req.params.id;
   let { text } = req.body;
 
   try {
-    db = await connectToMongoDB();
-    const messages = new Message.default(db);
+    const messages = new Message.default(req.db);
 
     // Si l'id du forum n'existe pas
     if(! await messages.existsId(messageId)) {
@@ -191,9 +146,5 @@ module.exports.modifieMessage = async (req, res) => {
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()
     });
-  } finally {
-    if (db) {
-      await closeMongoDBConnection();
-    }
   }
-}
+};
