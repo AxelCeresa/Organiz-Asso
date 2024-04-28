@@ -1,21 +1,31 @@
-import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useContext } from 'react';
+import Cookies from 'js-cookie';
+import { UserContext } from '../../AppContext';
+
 import axios from 'axios';
 import userImg from '../../../assets/img/user-placeholder-image.png';
 import './NavigationPanel.css'
 
-function NavigationPanel(props) {
-  const userId = props.userId;
+function NavigationPanel() {
+  const user = useContext(UserContext);
 
   const handleLogout = async () => {
-    await axios.delete('/api/user/logout', {}, { withCredentials: true, credentials: 'include' })
-      .then((res) => window.location = '/')
+    const usidCookie = Cookies.get('usid');
+    await axios.delete('http://localhost:4000/api/user/logout',
+    {
+      headers: {
+        "SessionId": usidCookie.match(/^..([^.]*)/)[1]
+      }
+    })
+      .then((res) => {
+        Cookies.remove('usid');
+        window.location = '/';
+      })
       .catch((err) => console.log(err));
   }
 
   const handleProfil = () => {
-    const profileUrl = `/profile/${userId}`;
-    window.location = "/profile/0";
+    window.location = `/profile/${user._id}`;
   }
 
   return (

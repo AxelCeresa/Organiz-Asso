@@ -8,30 +8,49 @@ import Profile from './pages/Profile/Profile'
 import Admin from './pages/Admin/Admin';
 import NotFound from './pages/NotFound/NotFound';
 
-import { UidContext } from './components/AppContext';
+import Cookies from 'js-cookie';
+import { UserContext } from './components/AppContext';
 import axios from 'axios';
-
-axios.defaults.baseURL = 'http://localhost:4000';
 
 
 function App() {
-  const [uid, setUid] = useState(null);
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getUserId  = async() => {
-    await axios.get("http://localhost:4000/uid")
-      .then((res) => setUid(res.data.userid))
-      .catch((err) => console.log(err));
-    };
+  const getUser  = async() => {
+    const usidCookie = Cookies.get('usid');
+    if (usidCookie) {
+      await axios.get("http://localhost:4000/api/uid", {
+        headers: {
+          "SessionId": usidCookie.match(/^..([^.]*)/)[1]
+        }
+      })
+        .then((res) => setUser(res.data.user))
+        .catch((err) => console.log(err));
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+    }
+  };
 
 
   useEffect(() => {
-    window.setTimeout(() => {
-      //getUserId();
-    }, 1000);
-  }, [uid]);
+    const timer = setTimeout(() => {
+      getUser();
+    }, 1);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+
+  if (isLoading) {
+    // Afficher un indicateur de chargement si getUser est en cours d'exécution
+    return <div>Chargement en cours...</div>;
+  }
+
 
   return (
-    <UidContext.Provider value={uid}>
+    <UserContext.Provider value={user}>
       <Router>
         <Routes>
           <Route path="/" element = <Home/> />
@@ -43,7 +62,7 @@ function App() {
           <Route path="/*" element = <NotFound/> />
         </Routes>
       </Router>
-    </UidContext.Provider>
+    </UserContext.Provider>
   );
 }
 

@@ -22,7 +22,7 @@ function init(db) {
   // Middleware de verification de session
   router.get('*', checkUser);
   router.get('/uid', requireAuth, (req, res) => {
-    res.status(200).json({ userid: res.locals.user._id.toString() });
+    res.status(200).json({ user: res.locals.user });
   });
 
 

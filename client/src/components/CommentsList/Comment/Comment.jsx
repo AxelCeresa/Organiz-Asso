@@ -8,13 +8,14 @@ function Comment({ comment }) {
   const text = comment.text;
   const date = comment.date;
 
+
   return (
     <div>
       <div className="message-rep" id="rep">
         <div className="info-user">
           <img src={userImg} alt="user" className="user-img"/>
-          <Link to={`/profile/${comment.authorId}`}> {userName} </Link>
-          <p><b>{userName}</b></p> <em>- {date} </em>
+          <Link to={`/profile/${comment.authorId}`}> <b>{userName}</b> </Link>
+          <em>- {date} </em>
         </div>
         <div className="message-content">
           <p>{text}</p>

@@ -1,6 +1,8 @@
 const session = require('express-session');
 const Users = require("../entities/users.js");
 
+const { store } = require('../config/db'); // Importez le magasin de sessions
+
 module.exports.register = async (req, res) => {
   const { login, password, lastname, firstname } = req.body;
 
@@ -46,7 +48,7 @@ module.exports.login = async (req, res) => {
       }
 
       let userid = await users.checkpassword(login, password);
-      
+
       if (! userid) {
         // Faux login : destruction de la session et Erreur
         req.session.destroy((err) => { });
@@ -81,27 +83,31 @@ module.exports.login = async (req, res) => {
   }
 };
 
+
 module.exports.logout = async (req, res) => {
   try {
     // Vérifie si l'utilisateur est connecté
-    if (req.session && req.session.userid){
-      // Détruit la session de l'utilisateur pour le déconnecter
-      req.session.destroy((err) => {
+    const sessionId = req.headers['sessionid'];
+    console.log(sessionId);
+
+    if (sessionId){
+      // Supprime la session du magasin
+      store.destroy(sessionId, (err) => {
         if (err) {
-          res.status(500).json({ status: 500, message: "Erreur interne lors de la déconnection", details: err});
+          res.status(500).json({ status: 500, message: "Erreur lors de la déconnexion", details: err });
         } else {
+          // Si la suppression de la session est réussie
           res.cookie('usid', '', { maxAge: 1 });
-          res.status(200).json({ status: 200, message: "Déconnection effectuée" });
+          res.status(200).json({ status: 200, message: "Déconnexion effectuée" });
         }
       });
     } else {
-      // Si l'utilisateur n'est pas connecté, renvoyer une Erreur
+      // Si l'utilisateur n'est pas connecté
       res.cookie('usid', '', { maxAge: 1 });
       res.status(401).json({ status: 401, message: "Utilisateur non connecté" });
     }
-
   } catch (err) {
-    // Toute autre erreur
+    // Gérer les erreurs
     res.status(500).json({
         message: "Erreur interne",
         details: (err || "Erreur inconnue").toString()

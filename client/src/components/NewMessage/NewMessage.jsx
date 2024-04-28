@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { UserContext } from '../AppContext';
+
 import userImg from '../../assets/img/user-placeholder-image.png';
 import './NewMessage.css'
 
 import axios from 'axios';
 
-function NewMessage({ user, forumId, getMessageList }) {
+function NewMessage({ forumId, getMessageList }) {
   const [messageContent, setMessageContent] = useState('');
+  const user = useContext(UserContext);
 
   const handleSubmit = async () => {
     await axios.put(`http://localhost:4000/api/message/`, {

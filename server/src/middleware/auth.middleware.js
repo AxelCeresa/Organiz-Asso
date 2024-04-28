@@ -1,22 +1,38 @@
 const Users = require("../entities/users.js");
+const { store } = require('../config/db'); // Importez le magasin de sessions
 
 module.exports.checkUser = async (req, res, next) => {
   try {
-    // Vérifie si l'utilisateur est connecté en vérifiant la présence de req.session.user
-    if (req.session.userid) {
-      const db_users = await req.db.collection("users");
-      const users = new Users.default(db_users);
+    // Vérifie si l'utilisateur est connecté
+    const sessionId = req.headers['sessionid'];
+    let userid = null;
 
-      let user = await users.get(req.session.userid);
-      res.locals.user = user;
-      console.log(req.session.userid);
-      next();
+    if (sessionId) {
+      await store.get(sessionId, async (err, session) => {
+          if (err || !session) {
+              console.log({ status: 404, message: 'Erreur : Session introuvable' });
+          } else {
+              // Extraire le champ `userid` de la session
+              const userid = session.userid;
 
+              if (userid) {
+                  const db_users = await req.db.collection("users");
+                  const users = new Users.default(db_users);
+                  let user = await users.get(userid);
+                  res.locals.user = user;
+              } else {
+                  // Si l'utilisateur n'est pas connecté
+                  res.locals.user = null;
+                  res.clearCookie('usid');
+              }
+          }
+          next();
+      });
     } else {
-      // Si l'utilisateur n'est pas connect
-      res.locals.user = null
-      res.cookie('usid', '', { maxAge: 1 });
-      next();
+        // Si aucun sessionId n'est présent
+        res.locals.user = null;
+        res.clearCookie('usid');
+        next();
     }
   } catch (err) {
     // En cas d'erreur, renvoie une erreur interne
@@ -30,9 +46,7 @@ module.exports.checkUser = async (req, res, next) => {
 
 module.exports.requireAuth = async (req, res, next) => {
   try {
-    // Vérifie si l'utilisateur est connecté en vérifiant la présence de req.session.user
-    if (req.session.userid) {
-      console.log(req.session.userid);
+    if (res.locals.user) {
       next();
     } else {
       res.status(401).json({ status: 401, message: 'Erreur : Utilisateur non authentifié' })

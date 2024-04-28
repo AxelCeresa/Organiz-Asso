@@ -7,13 +7,13 @@ import NewMessage from '../../components/NewMessage/NewMessage';
 import MessagesList from '../../components/MessagesList/MessagesList';
 import './Forum.css'
 
-import { UidContext } from '../../components/AppContext';
+import { UserContext } from '../../components/AppContext';
 
 function Forum(props) {
   const [messageList, setMessageList] = useState([]);
   const [forum, setForum] = useState(null);
 
-  const uid = useContext(UidContext);
+  const user = useContext(UserContext);
   let { id } = useParams();
 
   const getMessageList = async () => {
@@ -21,7 +21,6 @@ function Forum(props) {
       .then((res) => setMessageList(res.data))
       .catch((err) => console.log(err));
   };
-
 
   const getForum = async () => {
     await axios.get(`http://localhost:4000/api/forum/${id}`)
@@ -44,31 +43,23 @@ function Forum(props) {
   }, []);
 
 
-  if (uid) {
+  if (! user) {
     return <Navigate to='/' replace />;
   }
 
 
-  const user = {
-    _id: "660f12cef48869f0c8bdbf44",
-    login: "AxelC",
-    lastname: "Ceresa",
-    firstname: "Axel",
-    status: "member"
-  };
-
   return (
     <div>
-      <Header user={user}/ >
+      <Header />
       <div className="wrapper">
         <SideBar />
         {forum === null ? (
           <p>Chargement du forum</p>
         ) : (
         <main className="main-content">
-              <NewMessage user={user} forumId={id} getMessageList={getMessageList} />
+              <NewMessage forumId={id} getMessageList={getMessageList} />
               <h2>{forum.name}</h2>
-              <MessagesList user={user} messageList={messageList}/>
+              <MessagesList messageList={messageList}/>
         </main>
         )}
       </div>

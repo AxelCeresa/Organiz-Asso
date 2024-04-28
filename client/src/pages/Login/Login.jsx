@@ -15,9 +15,7 @@ function Login (props) {
       "login": login,
       "password": password
     }, { withCredentials: true, credentials: 'include' })
-      .then((res) => {
-        window.location = '/forum/6602f9c2391f27f96e5f84e4';
-      })
+      .then((res) => { window.location = '/forum/6602f9c2391f27f96e5f84e4' })
       .catch((err) => {
         if (err.response.status === 403) {
           setError(err.response.data.message);

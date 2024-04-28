@@ -4,7 +4,7 @@ import NavigationPanel from './NavigationPanel/NavigationPanel';
 import logo from '../../assets/img/logo-placeholder-image.png'
 import './Header.css'
 
-function Header(props) {
+function Header() {
   return (
     <header>
       <div className="logo">
@@ -12,7 +12,7 @@ function Header(props) {
         <h1><b>Organiz-Asso</b></h1>
       </div>
       <Search />
-      <NavigationPanel user={props.user} />
+      <NavigationPanel />
     </header>
   );
 }

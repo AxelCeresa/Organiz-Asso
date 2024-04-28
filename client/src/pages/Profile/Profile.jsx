@@ -7,13 +7,13 @@ import MessagesList from '../../components/MessagesList/MessagesList';
 import UserInfos from './UserInfos/UserInfos'
 import './Profile.css'
 
-import { UidContext } from '../../components/AppContext';
+import { UserContext } from '../../components/AppContext';
 
 function Profile(props) {
   const [messageList, setMessageList] = useState([]);
-  const [user, setUser] = useState(null);
+  const [userProfil, setUserProfil] = useState(null);
 
-  const uid = useContext(UidContext);
+  const user = useContext(UserContext);
   let { id } = useParams();
 
   const getMessageList = async () => {
@@ -25,7 +25,7 @@ function Profile(props) {
 
   const getUser = async () => {
     await axios.get(`http://localhost:4000/api/user/${id}`)
-      .then((res) => setUser(res.data))
+      .then((res) => setUserProfil(res.data))
       .catch((err) => {
         if (err.response.data.status === 400){
           window.location = '/notFound';
@@ -40,23 +40,24 @@ function Profile(props) {
       getMessageList();
     }, 1);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
 
-  if (uid) {
+  if (! user) {
     return <Navigate to='/' replace/>;
   }
 
-
   return (
     <div>
-      <Header user={user}/>
+      <Header />
       <div className="wrapper">
         <SideBar />
         <main className="main-content">
-          <UserInfos user={user} />
-          <MessagesList user={user} messageList={messageList} />
+          <UserInfos user={userProfil} />
+          <MessagesList messageList={messageList} />
         </main>
       </div>
     </div>

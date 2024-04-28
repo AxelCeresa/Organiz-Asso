@@ -10,7 +10,7 @@ import axios from 'axios';
 
 import './Admin.css'
 
-import { UidContext } from '../../components/AppContext';
+import { UserContext } from '../../components/AppContext';
 
 
 function Admin(props) {
@@ -47,9 +47,9 @@ function Admin(props) {
   }, []);
 
 
-  const uid = useContext(UidContext);
+  const user = useContext(UserContext);
 
-  if (uid) {
+  if (! user || user.status !== 'admin') {
     return <Navigate to='/' replace/>;
   }
 

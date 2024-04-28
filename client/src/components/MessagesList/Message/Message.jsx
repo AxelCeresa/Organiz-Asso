@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import { UserContext } from '../../AppContext';
+import { Link } from 'react-router-dom';
+
 import CommentsList from '../../CommentsList/CommentsList';
 import NewComment from '../../NewComment/NewComment';
 import axios from 'axios';
 import userImg from '../../../assets/img/user-placeholder-image.png';
 import './Message.css'
 
-function Message({ user, message }) {
+function Message({ message }) {
+  const user = useContext(UserContext);
+
   const [commentList, setCommentList] = useState([]);
 
   const [isVisible, setIsVisible] = useState(false);
@@ -59,7 +64,8 @@ function Message({ user, message }) {
       <div className="message-og">
         <div className="info-user">
           <img src={userImg} alt="user" className="user-img"/>
-          <p><b>{userName}</b></p><em> - {date} </em>
+          <Link to={`/profile/${message.authorId}`}> <b>{userName}</b> </Link>
+          <em>- {date} </em>
         </div>
         <div className="message-content">
           <p>{messageContent}</p>

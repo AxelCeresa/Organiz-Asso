@@ -4,6 +4,14 @@ const url = "mongodb+srv://axelCeresa:Hicko94!@cluster0.ird5nik.mongodb.net/Orga
 let db = null;
 let client = null;
 
+const MongoStore = require('connect-mongo');
+
+// Créer un magasin de sessions pour MongoDB
+const store = MongoStore.create({
+    mongoUrl: url,
+    collectionName: 'sessions' // Nom de la collection où stocker les sessions
+});
+
 // Fonction pour ouvrir la connexion à MongoDB
 async function connectToMongoDB() {
   try {
@@ -34,4 +42,4 @@ async function closeMongoDBConnection() {
     }
 }
 
-module.exports = { connectToMongoDB, closeMongoDBConnection };
+module.exports = { connectToMongoDB, closeMongoDBConnection, store};

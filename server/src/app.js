@@ -26,7 +26,8 @@ app.use(cors({
 
 // Config session
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
+const { store } = require('./config/db'); // Importez le magasin de sessions ici
+
 app.use(session({
   name: "usid",
   secret: "place_holder_secret_key",
@@ -35,12 +36,10 @@ app.use(session({
   cookie:{
     maxAge: 3600000, // Durée de vie du cookie (1h)
     secure: false, // Définir sur true si utilisation de HTTPS
-    httpOnly: true, // Empêche l'accès au cookie via Javascript coté client
+    httpOnly: false, // Empêche l'accès au cookie via Javascript coté client
     sameSite: 'None'
   },
-  store: MongoStore.create({
-    mongoUrl: "mongodb+srv://axelCeresa:Hicko94!@cluster0.ird5nik.mongodb.net/Organiz-Asso",
-  })
+  store: store
 }));
 
 const { connectDBMiddleware } = require('./middleware/db.middleware');
