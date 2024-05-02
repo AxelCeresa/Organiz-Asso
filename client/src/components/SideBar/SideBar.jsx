@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { UserContext } from '../AppContext';
+
 import axios from 'axios';
 import './SideBar.css'
 
 function SideBar(props) {
+  const user = useContext(UserContext);
   const [forumList, setForumList] = useState([]);
-
   const [showForumSubmenu, setShowForumSubmenu] = useState(false);
 
   const toggleForumSubmenu = () => {
@@ -16,6 +18,12 @@ function SideBar(props) {
     await axios.get('http://localhost:4000/api/forum')
       .then((res) => setForumList(res.data))
       .catch((err) => console.log(err));
+  }
+
+  const afficheForum = (forum) => {
+    if (forum.acces.includes(user.status)) {
+      return <Link to={`/forum/${forum._id}`}> {forum.name} </Link>;
+    }
   }
 
   useEffect(() => {
@@ -35,11 +43,11 @@ function SideBar(props) {
         {showForumSubmenu && (
           <div className="submenu">
           {forumList.map((forum, index) => (
-            <Link key={index} to={`/forum/${forum._id}`}> {forum.name} </Link>
+            afficheForum(forum)
           ))}
           </div>
         )}
-        <Link to='/admin'> Adminstration </Link>
+        {user.status === 'admin' && <Link to='/admin'> Adminstration </Link>}
       </div>
     </div>
   );

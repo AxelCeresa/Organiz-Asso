@@ -59,7 +59,7 @@ function Forum(props) {
         <main className="main-content">
               <NewMessage forumId={id} getMessageList={getMessageList} />
               <h2>{forum.name}</h2>
-              <MessagesList messageList={messageList}/>
+              <MessagesList messageList={messageList} getMessageList={getMessageList} />
         </main>
         )}
       </div>

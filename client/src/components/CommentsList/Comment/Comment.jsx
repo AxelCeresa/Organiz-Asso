@@ -1,24 +1,70 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { UserContext } from '../../AppContext';
+
+import axios from 'axios';
+
 import userImg from '../../../assets/img/user-placeholder-image.png';
 import './Comment.css'
 
-function Comment({ comment }) {
-  const userName = comment.authorName;
-  const text = comment.text;
-  const date = comment.date;
+function Comment({ comment, getCommentList }) {
+  const user = useContext(UserContext);
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [text, setText] = useState(comment.text);
+  const [editedText, setEditedText] = useState(comment.text);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditedText(text);
+  };
+
+  const handleEditSubmit = async () => {
+    setIsEditing(false);
+    if (text !== editedText) {
+      await axios.patch(`http://localhost:4000/api/comment/${comment._id}`, { text: editedText })
+        .then((res) => {
+          setText(editedText);
+          getCommentList();
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
+  const handleDelete = async () => {
+    await axios.delete(`http://localhost:4000/api/comment/${comment._id}`)
+      .then((res) => getCommentList())
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div>
       <div className="message-rep" id="rep">
         <div className="info-user">
           <img src={userImg} alt="user" className="user-img"/>
-          <Link to={`/profile/${comment.authorId}`}> <b>{userName}</b> </Link>
-          <em>- {date} </em>
+          <Link to={`/profile/${comment.authorId}`}> <b>{comment.authorName}</b> </Link>
+          <em>- {comment.date} </em>
+          <div className='edit-supp-buttons' >
+            {isEditing ? (
+              <button type="submit" className='confirm' onClick={handleEditSubmit}>Envoyer</button>
+            ) : (
+              <div>
+                {comment.authorId === user._id &&
+                  <button type="button" onClick={handleEdit}>Edit</button>
+                }
+                {(comment.authorId === user._id || user.status === 'admin') &&
+                  <button type="button" onClick={handleDelete}>Del</button>
+                }
+              </div>
+            )}
+          </div>
         </div>
         <div className="message-content">
+        {isEditing ? (
+          <textarea type="text" value={editedText} onChange={(e) => setEditedText(e.target.value)}></textarea>
+        ) : (
           <p>{text}</p>
+        )}
         </div>
       </div>
     </div>
