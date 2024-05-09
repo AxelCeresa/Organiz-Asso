@@ -69,27 +69,26 @@ Acces définit les status de user pouvant voir et ecrire dans le forum.
 **messages** : 
 ```json
 {
-   "_id" : "objectId('66047529ae1a22ee065d71ec')",
-   "forumId" : "6602f9c2391f27f96e5f84e4",
-   "userId" : "6602f45a954659e97353c359",
-   "userName" : "Dupond", 
-   "date" : "2024-03-27T19:36:09.108+00:00",
-   "text" : String,
-   "modified" : Boolean
+   "_id" : "objectId()",
+   "forumId" : "String",
+   "userId" : "String",
+   "userName" : "String", 
+   "date" : "Date()",
+   "text" : "String",
+   "modified" : "Boolean"
 }
 ```
-Avec les champs _id de type `ObjectId`, forumId, authorId, authorName et text de type `String`. Le champs date est de type `Date` et modified est de type `Boolean`.  
 
 **comments** : 
 ```json
 {
-   "_id" : "objectId('66047529ae1a22ee065d82ab')",
-   "messageId" : "66047529ae1a22ee065d71ec",
-   "authorId" : "6602f45a954659e97353c359",
-   "authorName" : "Dupond",
-   "date" : "2024-03-27T19:36:09.108+00:00",
-   "text" : "Ceci est un premier commentaire",
-   "modified" : false
+   "_id" : "objectId()",
+   "messageId" : "String",
+   "authorId" : "String",
+   "authorName" : "String",
+   "date" : "Date()",
+   "text" : "String",
+   "modified" : type(Boolean)
 }
 ```
 Avec les champs _id de type `ObjectId`, messageId, authorId, authorName et text de type `String`. Le champs date est de type `Date` et modified est de type `Boolean`.    
