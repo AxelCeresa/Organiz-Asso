@@ -11,7 +11,7 @@ Base de données avec MongoDB.
 
 Une fois les fichiers téléchargés, dans un terminal faire un `npm install` dans le répertoire `/server` et dans le répertoire `/client` pour installer les dépendences nécéssaires.
 
-1. **Base de donnée :** Pour relier la base de donnée au backend, modifier coté server dans le fichier `/config/db.js` la ligne 2 `const url = "url_mongodb";` par le lien de votre base de données MongoDB. Créer une base de données Organiz-Asso et y importer les collections sous format .json présente dans le répertoire `Collections`.
+**Base de donnée :** Pour relier la base de donnée au backend, modifier coté server dans le fichier `/config/db.js` la ligne 2 `const url = "url_mongodb";` par le lien de votre base de données MongoDB. Créer une base de données Organiz-Asso et y importer les collections sous format .json présente dans le répertoire `Collections`.
 
 ## BACKEND
 
