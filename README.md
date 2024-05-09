@@ -88,10 +88,9 @@ Acces définit les status de user pouvant voir et ecrire dans le forum.
    "authorName" : "String",
    "date" : "Date()",
    "text" : "String",
-   "modified" : type(Boolean)
+   "modified" : "Boolean"
 }
 ```
-Avec les champs _id de type `ObjectId`, messageId, authorId, authorName et text de type `String`. Le champs date est de type `Date` et modified est de type `Boolean`.    
 
 **sessions** : Est généré automatiquement par express-session et contient l'id de la session et le cookie associé.  
 
@@ -99,6 +98,4 @@ Avec les champs _id de type `ObjectId`, messageId, authorId, authorName et text 
 ## Lancement
 
 Pour lancer le serveur, se placer dans le dossier `/server` et exécuter la commande `npm start` dans un terminal. Cela lancera le serveur à l'adresse `http://localhost:4000` par défaut.  
-Pour lancer le client, se placer dans le dossier `/client` et exécuter la commande `npm start` dans un terminal. Cela compilera et lancera le client à l'adresse `http://localhost:3000` par défaut (le navigateur s'ouvre automatiquement).  
-
-Après avoir paramettré la base de donnée dans le serveur, normalement le formulaire d'enregistrement fonctionne et créer bien l'utilisateur dans la DB. De même le formulaire de login fonctionne et fait bien la comparaison avec les infos de la DB pour faire la connexion.
+Pour lancer le client, se placer dans le dossier `/client` et exécuter la commande `npm start` dans un terminal. Cela compilera et lancera le client à l'adresse `http://localhost:3000` par défaut (le navigateur s'ouvre automatiquement).
