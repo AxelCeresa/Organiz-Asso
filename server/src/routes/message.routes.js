@@ -6,6 +6,7 @@ router.get('/', messageController.getAllMessages);
 router.get('/forum/:id', messageController.getAllForumMessages);
 router.get('/user/:id', messageController.getAllUserMessages);
 router.get('/:id', messageController.messageInfo);
+router.post('/search', messageController.searchMessage);
 
 router.put('/', messageController.postMessage);
 router.patch('/:id', messageController.modifieMessage);

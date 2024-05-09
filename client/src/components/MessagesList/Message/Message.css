@@ -1,23 +1,22 @@
 .message-og {
-  border: 1px solid grey;
-  border-radius: 5px;
-  background-color: #dee0e1;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  background-color: #fff;
   padding: 10px;
   height: auto;
-  margin: 20px;
-  margin-top: 20px;
+  margin: 5px;
+  margin-top: 15px;
   text-align: right;
 }
 
 .message-content {
   background-color: #ffff;
   color: black;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 10px;
-  padding: 5px;
+  padding-left: 5px;
   height: auto;
   text-align: left;
-  align-items: center;
 }
 
 .message-content p {
@@ -25,13 +24,20 @@
 }
 
 .message-info button {
-  height: 25px;
+  height: 20px;
   margin: 2px;
   margin-left: 5px;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  border: 1px solid grey;
+}
+
+.message-info button:hover {
+  background-color: #fff;
+  cursor: pointer;
 }
 
 .message-info{
-  margin-top: 2px;
   text-align: right;
 }
 
@@ -50,7 +56,6 @@
 .info-user .edit-supp-buttons button{
   margin: 2px;
 }
-
 
 .info-user p:hover{
   text-decoration: underline;
@@ -87,7 +92,7 @@
   width: 99%;
   border: none;
   border-radius: 10px;
-  padding: 5px;
+  padding-left: 5px;
   resize: none;
   font-size: 16px;
   font-family: 'Arial', sans-serif;

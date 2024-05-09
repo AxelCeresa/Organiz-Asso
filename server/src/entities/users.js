@@ -110,6 +110,25 @@ class Users {
     });
   }
 
+  searchUser(text) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Vérifier si l'utilisateur existe dans la base de données
+        const users = await this.db.find(
+          { login: { $regex: text, $options: 'i' } },
+          { password: false }
+        ).toArray();
+
+        if (!users) {
+          reject({ status: 500, message: "Erreur : Echec de la requête." })
+        } else { resolve(users) }
+
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   getNotVerifiedUsers() {
     return new Promise(async (resolve, reject) => {
       try {

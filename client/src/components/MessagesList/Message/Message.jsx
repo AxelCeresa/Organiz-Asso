@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../../AppContext';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 import CommentsList from '../../CommentsList/CommentsList';
 import NewComment from '../../NewComment/NewComment';
@@ -10,7 +11,7 @@ import './Message.css'
 
 function Message({ message, getMessageList }) {
   const user = useContext(UserContext);
-  
+
   const [commentList, setCommentList] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [isNewCommentOpen, setIsNewCommentOpen] = useState(false);
@@ -19,6 +20,7 @@ function Message({ message, getMessageList }) {
   const [text, setText] = useState(message.text);
   const [editedText, setEditedText] = useState(message.text);
 
+  const [isModified, setIsModified] = useState(message.modified);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -54,6 +56,7 @@ function Message({ message, getMessageList }) {
       await axios.patch(`http://localhost:4000/api/message/${message._id}`, { text: editedText })
         .then((res) => {
           setText(editedText);
+          setIsModified(true);
           getMessageList();
         })
         .catch((err) => console.log(err));
@@ -66,8 +69,8 @@ function Message({ message, getMessageList }) {
       .catch((err) => console.log(err));
   };
 
-
   const getCommentList = async () => {
+    setCommentList([]);
     await axios.get(`http://localhost:4000/api/comment/message/${message._id}`)
       .then((res) => setCommentList(res.data))
       .catch((err) => console.log(err));
@@ -84,7 +87,7 @@ function Message({ message, getMessageList }) {
 
   const userName = message.authorName;
   const messageContent = message.text;
-  const date = message.date;
+  const date = moment(message.date).format('DD/MM/YYYY HH:mm');
 
 
   return (
@@ -93,7 +96,8 @@ function Message({ message, getMessageList }) {
         <div className="info-user">
           <img src={userImg} alt="user" className="user-img"/>
           <Link to={`/profile/${message.authorId}`}> <b>{userName}</b> </Link>
-          <em>- {date} </em>
+          <em>&nbsp;- {date} </em>
+          {isModified && <p>&nbsp;- modifié</p>}
           <div className='edit-supp-buttons' >
             {isEditing ? (
               <button type="submit" className='confirm' onClick={handleEditSubmit}>Envoyer</button>
@@ -103,7 +107,7 @@ function Message({ message, getMessageList }) {
                   <button type="button" onClick={handleEdit}>Edit</button>
                 }
                 {(message.authorId === user._id || user.status === 'admin') &&
-                  <button type="button" onClick={handleDelete}>Del</button>
+                  <button type="button" onClick={handleDelete}>Delete</button>
                 }
               </div>
             )}
@@ -117,8 +121,8 @@ function Message({ message, getMessageList }) {
           )}
         </div>
         <div className="message-info">
-          {commentList.length > 0 && <button type="button" onClick={toggleVisibility}>{commentList.length} commentaires</button>}
-          <button type="button" onClick={toggleNewComment}>+ Ajouter un commentaire</button>
+          {commentList.length > 0 && <button type="button" onClick={toggleVisibility}>{commentList.length} 💬</button>}
+          <button type="button" onClick={toggleNewComment}><b>+</b></button>
         </div>
       </div>
       <NewComment isOpen={isNewCommentOpen} onClose={toggleNewComment} onSubmit={handleCommentSubmit} userName={userName}/>

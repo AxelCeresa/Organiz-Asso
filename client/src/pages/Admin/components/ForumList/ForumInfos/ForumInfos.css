@@ -28,6 +28,10 @@
   margin-left: auto;
 }
 
+.forum-infos-container .options button {
+  margin-left: 5px;
+}
+
 .forum-infos-container .error{
   color: red;
 }

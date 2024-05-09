@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import axios from 'axios';
 import './DemandeInfos.css';
 
@@ -23,7 +24,7 @@ function DemandeInfos({ user, getDemande, getUser}) {
   const firstName = user.firstname;
   const lastName = user.lastname;
   const userName = user.login;
-  const date = user.date;
+  const date = moment(user.date).format('DD/MM/YYYY HH:mm');
 
   return (
     <div className="demande-infos-container">

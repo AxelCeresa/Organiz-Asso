@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../../AppContext';
 
+import moment from 'moment';
 import axios from 'axios';
 
 import userImg from '../../../assets/img/user-placeholder-image.png';
@@ -14,6 +15,8 @@ function Comment({ comment, getCommentList }) {
   const [text, setText] = useState(comment.text);
   const [editedText, setEditedText] = useState(comment.text);
 
+  const [isModified, setIsModified] = useState(comment.modified);
+
   const handleEdit = () => {
     setIsEditing(true);
     setEditedText(text);
@@ -25,6 +28,7 @@ function Comment({ comment, getCommentList }) {
       await axios.patch(`http://localhost:4000/api/comment/${comment._id}`, { text: editedText })
         .then((res) => {
           setText(editedText);
+          setIsModified(true);
           getCommentList();
         })
         .catch((err) => console.log(err));
@@ -43,7 +47,8 @@ function Comment({ comment, getCommentList }) {
         <div className="info-user">
           <img src={userImg} alt="user" className="user-img"/>
           <Link to={`/profile/${comment.authorId}`}> <b>{comment.authorName}</b> </Link>
-          <em>- {comment.date} </em>
+          <em>&nbsp;- {moment(comment.date).format('DD/MM/YYYY HH:mm')} </em>
+          {isModified && <p>&nbsp;- modifié</p>}
           <div className='edit-supp-buttons' >
             {isEditing ? (
               <button type="submit" className='confirm' onClick={handleEditSubmit}>Envoyer</button>
@@ -53,7 +58,7 @@ function Comment({ comment, getCommentList }) {
                   <button type="button" onClick={handleEdit}>Edit</button>
                 }
                 {(comment.authorId === user._id || user.status === 'admin') &&
-                  <button type="button" onClick={handleDelete}>Del</button>
+                  <button type="button" onClick={handleDelete}>Delete</button>
                 }
               </div>
             )}

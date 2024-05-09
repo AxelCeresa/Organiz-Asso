@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../components/Header/Header';
 import SideBar from '../../components/SideBar/SideBar';
@@ -13,6 +13,7 @@ function Profile(props) {
   const [messageList, setMessageList] = useState([]);
   const [userProfil, setUserProfil] = useState(null);
 
+  const location = useLocation();
   const user = useContext(UserContext);
   let { id } = useParams();
 
@@ -43,7 +44,7 @@ function Profile(props) {
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [location.pathname]);
 
 
   if (! user) {

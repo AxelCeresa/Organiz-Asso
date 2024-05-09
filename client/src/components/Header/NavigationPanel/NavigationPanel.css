@@ -25,7 +25,9 @@
 }
 
 .nav-container .nav .navButton{
-  width: 95%;
+  display: flex;
+  font-family: Arial, sans-serif;
+  width: auto;
   height: auto;
   margin: 5px;
   padding: 5px;
@@ -33,10 +35,18 @@
   border-radius: 45px;
   border: 1px solid grey;
   background-color: #fff;
+  text-decoration: none;
+  color: inherit;
+  font-size: 15px;
 }
 
 .nav-container .navButton:hover{
   color: #fff;
   background-color: #007bff;
   border-color: #007bff;
+  transition: 0.2s;
+}
+
+.nav-container .nav .navButton a{
+  margin-left: 5px;
 }

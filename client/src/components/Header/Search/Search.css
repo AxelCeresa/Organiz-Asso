@@ -15,6 +15,7 @@
 
 .search input[type="text"] {
     padding: 5px;
+    padding-left: 8px;
     margin-right: 5px;
     border: 1px solid grey;
     border-radius: 30px;
@@ -23,12 +24,12 @@
 
 .search input[type="date"] {
     padding: 5px;
-    margin-right: 5px;
+    margin-left: 5px;
     border: 1px solid grey;
     border-radius: 30px;
 }
 
-.search button {
+.search button[type="submit"] {
     padding: 5px 10px;
     border: 1px solid #007bff;
     border-radius: 30px;
@@ -38,7 +39,8 @@
     margin-right: 15px;
 }
 
-.search button:hover {
+.search button[type="submit"]:hover {
   background-color: #fff;
   color: #007bff;
+  transition: 0.2s;
 }

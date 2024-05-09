@@ -6,6 +6,7 @@ function NewComment({ isOpen, onClose, onSubmit, userName}) {
 
   const handleSubmit = () => {
     onSubmit(messageContent);
+    setMessageContent('');
   }
 
   if (!isOpen) return null;

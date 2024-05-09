@@ -145,3 +145,24 @@ module.exports.getNotVerifiedUsers = async (req, res) => {
     });
   }
 };
+
+module.exports.searchUser = async (req, res) => {
+  try {
+    db_users = await req.db.collection("users");
+    const users = new Users.default(db_users);
+
+    const { text } = req.body;
+
+    // Récuprère la liste des users
+    await users.searchUser(text)
+      .then((rep) => res.status(200).json(rep))
+      .catch((err) => res.status(err.status).json(err))
+
+  } catch (err) {
+    // Toute autre erreur
+    res.status(500).json({
+        message: "Erreur interne",
+        details: (err || "Erreur inconnue").toString()
+    });
+  }
+};

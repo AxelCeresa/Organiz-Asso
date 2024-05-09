@@ -12,6 +12,7 @@ router.delete("/logout", authController.logout);
 router.get('/', userController.getAllUsers);
 router.get('/verifie', userController.getNotVerifiedUsers);
 router.get('/:id', userController.userInfos);
+router.post('/search', userController.searchUser);
 router.delete('/:id', userController.deleteUser);
 router.patch('/status/:id', userController.switchUserStatus);
 router.patch('/verifie/:id', userController.verifieUser);

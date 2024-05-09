@@ -28,6 +28,10 @@
   margin-left: auto;
 }
 
+.user-infos-container .options button {
+  margin-left: 5px;
+}
+
 .user-infos-container .error{
   color: red;
 }

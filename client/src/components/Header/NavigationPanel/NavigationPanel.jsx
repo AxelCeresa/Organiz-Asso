@@ -1,5 +1,7 @@
 import React, { useContext } from 'react';
 import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
+
 import { UserContext } from '../../AppContext';
 
 import axios from 'axios';
@@ -24,20 +26,12 @@ function NavigationPanel() {
       .catch((err) => console.log(err));
   }
 
-  const handleProfil = () => {
-    window.location = `/profile/${user._id}`;
-  }
-
   return (
     <div className="nav-container">
       <img src={userImg} alt="user" className="logo-img" />
       <div id="menu" className="nav">
-        <div>
-          <button className="navButton" onClick={ handleProfil }>Mon profil</button>
-        </div>
-        <div>
-          <button className="navButton" onClick={ handleLogout }>Déconnexion</button>
-        </div>
+        <Link to={`/profile/${user._id}`} className='navButton' >&nbsp;&nbsp;Mon profil </Link>
+        <button className="navButton" onClick={ handleLogout }>Déconnexion</button>
       </div>
     </div>
   );

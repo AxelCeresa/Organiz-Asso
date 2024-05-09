@@ -100,6 +100,33 @@ class Message {
     });
   }
 
+  searchMessage(text, startDate, endDate) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let message = null
+        if(startDate && endDate) {
+          message = await this.messages_db.find(
+            {
+              text: { $regex: text, $options: 'i' },
+              date: { $gte: new Date(startDate), $lte: new Date(endDate) }
+            }
+          );
+        } else {
+          message = await this.messages_db.find(
+            { text: { $regex: text, $options: 'i' } }
+          );
+        }
+
+        if (!message) {
+          reject({ status:400,  message: "Erreur : ID inconnu = " + commentId });
+        } else { resolve(message.toArray()) }
+
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   getAll() {
     return new Promise(async (resolve, reject) => {
       try {

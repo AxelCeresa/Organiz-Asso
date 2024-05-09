@@ -24,6 +24,25 @@ module.exports.postMessage = async (req, res) => {
   }
 };
 
+module.exports.searchMessage = async (req, res) => {
+  try {
+    const messages = new Message.default(req.db);
+
+    const { text, startDate, endDate } = req.body;
+
+    await messages.searchMessage(text, startDate, endDate)
+      .then((rep) => res.status(200).json(rep))
+      .catch((err) => res.status(err.status).json(err));
+
+  } catch (err) {
+    // Toute autre erreur
+    res.status(500).json({
+        message: "Erreur interne",
+        details: (err || "Erreur inconnue").toString()
+    });
+  }
+};
+
 module.exports.getAllMessages = async (req, res) => {
   try {
     const messages = new Message.default(req.db);
