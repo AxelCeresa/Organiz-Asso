@@ -1,9 +1,9 @@
 # Organiz-Asso
 
-Projet de l'UE LU3IN017 - Technologies du Web.
-Axel CERESA - 21103270
+Projet de l'UE LU3IN017 - Technologies du Web.  
+Axel CERESA - 21103270  
 Daba KONE - 
-
+  
 Frontend en React et Backend en NodeJs avec express.  
 Base de données avec MongoDB.
 
@@ -39,40 +39,43 @@ La base de données est définit grâce à MongoDB.
 
 ### Définition des collections :
 
+Les champs _id de type `ObjectId` sont générés automatiquement lors de l'ajout d'un document dans la base de donnée.  
+
 **users** : 
 ```json
 {
-   "_id" : ObjectId,
-   "login" : String,
-   "password" : String,
-   "lastname" : String,
-   "firsname" : String,
-   "status" : String
+   "_id" : "ObjectId()",
+   "login" : "String",
+   "password" : "String",
+   "lastname" : "String",
+   "firsname" : "String",
+   "status" : "String",
+   "date" : "Date()",
+   "verified" : "Boolean"
 }
 ```
-Avec les champs _id de type `ObjectId` (généré automatiquement lors de l'ajout d'un document dans la base de donnée) et login, password, lastname, firsname, status, de type `String`.  
-A savoir que le password est cryté à l'aide de la bibliothèque `bcrypt` avant l'ajout dans la base de données.  Le status d'un user est initialisé de base à "member".
+Le password est cryté à l'aide de la bibliothèque `bcrypt` avant l'ajout dans la base de données. Le status d'un user est initialisé de base à "member".  
 
 **forums** : 
 ```json
 {
-   "_id" : "objectId('6602f9c2391f27f96e5f84e4')",
-   "name" : "Forum membres",
-   "acces" : [ "member", "admin" ]
+   "_id" : "objectId()",
+   "name" : "String",
+   "acces" : [ "String" ]
 }
 ```
-Avec les champs _id de type `ObjectId`, name de type `String` et acces une liste de `String`.  Acces définit les status de user pouvant voir et ecrire dans le forum.  
+Acces définit les status de user pouvant voir et ecrire dans le forum.  
 
 **messages** : 
 ```json
 {
-   "_id" : "objectId('66047529ae1a22ee065d71ec')", // Pas obligatoire à mettre dans le message
+   "_id" : "objectId('66047529ae1a22ee065d71ec')",
    "forumId" : "6602f9c2391f27f96e5f84e4",
    "userId" : "6602f45a954659e97353c359",
    "userName" : "Dupond", 
-   "date" : "2024-03-27T19:36:09.108+00:00", // Pas obligatoire à mettre dans le message
-   "text" : "Ceci est un premier message",
-   "modified" : false // Pas obligatoire à mettre dans le message
+   "date" : "2024-03-27T19:36:09.108+00:00",
+   "text" : String,
+   "modified" : Boolean
 }
 ```
 Avec les champs _id de type `ObjectId`, forumId, authorId, authorName et text de type `String`. Le champs date est de type `Date` et modified est de type `Boolean`.  
