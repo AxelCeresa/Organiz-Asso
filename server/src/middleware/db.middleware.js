@@ -13,7 +13,6 @@ module.exports.connectDBMiddleware = async (req, res, next) => {
 // Middleware pour fermer la connexion à MongoDB
 module.exports.closeDBMiddleware = async (req, res, next) => {
   try {
-    console.log('test');
     await closeMongoDBConnection(); // Ferme la connexion MongoDB
     next();
   } catch (error) {

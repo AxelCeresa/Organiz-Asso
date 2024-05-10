@@ -38,7 +38,7 @@ async function closeMongoDBConnection() {
         }
     } catch (err) {
         console.error('Failed to disconect from MongoDB :', err);
-        throw error;
+        throw err;
     }
 }
 

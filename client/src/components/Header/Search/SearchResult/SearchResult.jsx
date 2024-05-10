@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import Message from '../../../MessagesList/Message/Message';
-import moment from 'moment';
 import './SearchResult.css';
 
 function SearchResult({ isOpen, onClose, userList, messageList }) {

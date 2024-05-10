@@ -41,9 +41,12 @@ function Admin(props) {
   }
 
   useEffect(() => {
-    getForumList();
-    getUserList();
-    getDemandeList();
+    const timer = setTimeout(() => {
+      getForumList();
+      getUserList();
+      getDemandeList();
+    }, 1);
+    return () => clearTimeout(timer);
   }, []);
 
 

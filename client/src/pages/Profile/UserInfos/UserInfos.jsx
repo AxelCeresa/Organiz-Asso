@@ -4,8 +4,6 @@ import userImg from '../../../assets/img/user-placeholder-image.png'
 import './UserInfos.css'
 
 function UserInfos({ user }) {
-  const img = "img/user-placeholder-image.png";
-
   return (
     <div>
       {user === null ? (

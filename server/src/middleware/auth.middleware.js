@@ -13,7 +13,7 @@ module.exports.checkUser = async (req, res, next) => {
               console.log({ status: 404, message: 'Erreur : Session introuvable' });
           } else {
               // Extraire le champ `userid` de la session
-              const userid = session.userid;
+              userid = session.userid;
 
               if (userid) {
                   const db_users = await req.db.collection("users");

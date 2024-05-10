@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import SearchResult from './SearchResult/SearchResult';
 
 import axios from 'axios';
@@ -14,8 +13,6 @@ function Search(props) {
   const [text, setText] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-
-  let { id } = useParams();
 
   const toggleSearchResult = () => {
     setIsSearchResultOpen(!isSearchResultOpen);

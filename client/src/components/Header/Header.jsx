@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Search from './Search/Search';
 import NavigationPanel from './NavigationPanel/NavigationPanel';
 import logo from '../../assets/img/logo-placeholder-image.png'
