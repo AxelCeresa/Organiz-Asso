@@ -16,14 +16,14 @@
 \section{Rapport}
 
 \subsection{Répartition du travail}
-Notre binôme est un petit peu particulier, Daba était dans un autre groupe puis dans une autre classe avant de me rejoindre (Axel). A ce moment, une grande partie du travail avait déjà été réalisée.\\
+Notre binôme est un petit peu particulier. Daba était dans un autre groupe puis dans une autre classe avant de me rejoindre (Axel). A ce moment, une grande partie du travail avait déjà été réalisée.\\
 
 - Axel : Tout le backend et le frontend.
 
 - Daba : Tests Postman de toutes les requêtes.
 
 \subsection{Difficultés}
-La principale difficulté que nous avons rencontrée concerne l'utilisation de express-session pour généré la connexion et la déconnexion d'un utilisateur. L'utilisation des cookies de session n'était pas évidente à comprendre au départ.
+La principale difficulté que nous avons rencontrée concerne l'utilisation de express-session pour générer la connexion et la déconnexion d'un utilisateur. L'utilisation des cookies de session n'était pas évidente à comprendre au départ.
 
 L'autre difficulté était de comprendre comment bien utiliser les requêtes \texttt{axios} et les \texttt{useEffect} pour actualiser en permanence les messages des forums et que la page reste à jour sans avoir besoin de recharger la page.
 
@@ -40,8 +40,9 @@ Si nous avions eu le temps, nous aurions aimé implémenter d'autres fonctionnal
 De plus, l'ajout d'un genre de calendrier / liste d'évènements (création et suppression) aurait pu être intéressant.
 
 \subsection{Choix d'implémentation}
-Concernant les choix d'implémentation, nous avons utilisé \texttt{react-router-dom} pour gérer les routes et les urls du site côté client.//
-Pour la base de données, notre choix de créer une collection différentes pour les commentaires au lieu de les intégrer directement dans la description d'un commentaires n'est peut-être pas la meilleur solution car cela multiplie le nombre de requête au serveur, ce qui n'est pas très efficace.
+Concernant les choix d'implémentation, nous avons utilisé \texttt{react-router-dom} pour gérer les routes et les urls du site côté client.
+
+Pour la base de données, notre choix de créer une collection différente pour les commentaires au lieu de les intégrer directement dans la description d'un message n'est peut-être pas la meilleur solution car cela multiplie le nombre de requête au serveur, ce qui n'est pas très efficace.
 
 \begin{figure}
     \includegraphics[width=1\textwidth]{BDD.png}
@@ -55,18 +56,18 @@ Pour la base de données, notre choix de créer une collection différentes pour
 \section{Installation}
 Une fois les fichiers téléchargés, dans un terminal faire un \texttt{npm install} dans le répertoire \texttt{/server} et dans le répertoire \texttt{/client} pour installer les dépendances nécessaires.
 
-Pour relier la base de données au backend, modifier côté server dans le fichier \texttt{/config/db.js} la ligne 2 \texttt{const url = "url\_mongodb";} par le lien de votre base de données MongoDB. Créer une base de données Organiz-Asso et y importer les collections sous format .json présente dans le répertoire \texttt{Collections}.
+Pour relier la base de données au backend, modifier côté serveur dans le fichier \texttt{/config/db.js} la ligne 2 \texttt{const url = "url\_mongodb";} par le lien de votre base de données MongoDB. Créer une base de données Organiz-Asso et y importer les collections sous format .json présentes dans le répertoire \texttt{Collections}.
 
 \section{BACKEND}
 
 \subsection*{Architecture des fichiers}
-Dans le dossier \texttt{/server} se trouve tous les fichiers réalisant le backend de notre application le point d'entrée est \texttt{index.js}, \texttt{app.js} lance le server et fait appel à \texttt{api.js} qui gère toutes les routes de notre backend.
+Dans le dossier \texttt{/server} se trouve tous les fichiers réalisant le backend de notre application dont le point d'entrée est \texttt{index.js}. Ensuite, \texttt{app.js} lance le server et fait appel à \texttt{api.js} qui gère toutes les routes de notre backend.
 
 \begin{enumerate}
-    \item \texttt{/config} : Contient le fichier \texttt{db.js} qui définit les fonctions utilisées dans notre application pour se connecter et se déconnecter de la base de données. Elle sont appelées dans le fichier \texttt{db.middleware.js}.
-    \item \texttt{/controllers} : Contient les fichiers définissant toutes les actions possibles sur notre base de données appelé en callback des différentes routes de notre application. Chaque fichier correspond aux fonctions liées à une entité spécifique (ex: user, forum, message, etc...). Ces fonctions font appel aux méthodes des classes définies dans les fichiers de \texttt{/entities}.
-    \item \texttt{/entities} : Contient les fichiers définissant les classes de chaque entités de notre application (user, forum, message, comment). Les méthodes définies dans ses classes effectuent les requêtes auprès de la base de données MongoDB donnée en paramètres.
-    \item \texttt{/middleware} : Contient les middlewares \texttt{checkUser} et \texttt{requireAuth} utilisés à la racine de notre serveur pour sécuriser les requêtes et restreindre leur accès uniquement à un utilisateur connecté (dont une session express a été créée). Les middlewares \texttt{connectDBMiddleware} et \texttt{closeDBMiddleware}.
+    \item \texttt{/config} : Contient le fichier \texttt{db.js} qui définit les fonctions utilisées dans notre application pour se connecter et se déconnecter de la base de données. Elles sont appelées dans le fichier \texttt{db.middleware.js}.
+    \item \texttt{/controllers} : Contient les fichiers définissant toutes les actions possibles sur notre base de données. Elles sont appelées en callback des différentes routes de notre application. Chaque fichier correspond aux fonctions liées à une entité spécifique. Ces fonctions font appel aux méthodes des classes définies dans les fichiers de \texttt{/entities}.
+    \item \texttt{/entities} : Contient les fichiers définissant les classes de chaque entités de notre application (user, forum, message, comment). Les méthodes définies dans ces classes effectuent les requêtes auprès de la base de données MongoDB passée en paramètres.
+    \item \texttt{/middleware} : Contient les middlewares \texttt{checkUser} et \texttt{requireAuth} utilisés à la racine de notre serveur pour sécuriser les requêtes et restreindre leur accès uniquement à un utilisateur connecté (dont une session express a été créée). A chaque requête, les middlewares \texttt{connectDBMiddleware} et \texttt{closeDBMiddleware} sont appelés.
     \item \texttt{/routes} : Contient les fichiers définissant les routes des requêtes serveur de notre application pour chaque famille de services.
 \end{enumerate}
 
@@ -75,13 +76,13 @@ Dans le dossier \texttt{/server} se trouve tous les fichiers réalisant le backe
 \section{FRONTEND}
 
 \subsection*{Architecture des fichiers}
-Dans le dossier \texttt{/client} se trouve tous les fichiers réalisant le frontend de notre application le point d'entrée est \texttt{index.js}, qui fait appel au composant \texttt{<App/>} qui gère le routage de notre application avec \texttt{react-router-dom}.
+Dans le dossier \texttt{/client} se trouve tous les fichiers réalisant le frontend de notre application. Le point d'entrée est \texttt{index.js}, qui fait appel au composant \texttt{<App/>} qui gère le routage de notre application avec \texttt{react-router-dom}.
 
 \begin{enumerate}
-    \item \texttt{/public} : Contient le fichier \texttt{index.html} dans lequel est fait le render des composants react de l'application.
+    \item \texttt{/public} : Contient le fichier \texttt{index.html} dans lequel est généré le render des composants react de l'application.
     \item \texttt{/assets/img} : Contient les images/logo temporairement utilisés dans l'application.
     \item \texttt{/components} : Contient les fichiers définissant les différents composants appelés dans les pages de notre application react. Ces composants disposent chacun de leur fichier CSS correspondant. \texttt{AppContext.js} est le composant englobant toute notre application et permet de stocker dans une variable accessible dans tout nos composants les informations de session de l'utilisateur connecté.
-    \item \texttt{/pages} : Contient les fichiers définissant les composants des pages de l'application, chacune d'elles appellent les composants définis dans le dossier \texttt{/components}.
+    \item \texttt{/pages} : Contient les fichiers définissant les pages de l'application, chacune d'elles fait appel aux composants définis dans le répertoire \texttt{/components}.
 \end{enumerate}
 
 \section{BASE DE DONNÉES}
@@ -115,7 +116,7 @@ Le password est crypté à l'aide de la bibliothèque \texttt{bcrypt} avant l'aj
    "acces" : [ String ]
 }
 \end{verbatim}
-Acces définit les status de user pouvant voir et écrire dans le forum.
+Le champs acces définit les status de user pouvant voir et écrire dans le forum.
 
 \subsubsection*{messages}
 \begin{verbatim}
@@ -151,7 +152,7 @@ Acces définit les status de user pouvant voir et écrire dans le forum.
    "session" : String
 }
 \end{verbatim}
-Est généré automatiquement par express-session et contient l'id de la session et le cookie associé.
+Les documents de la collection sessions sont générés automatiquement par express-session et contiennent l'id de la session ainsi que le cookie associé.
 
 \section{Lancement}
 Pour lancer le serveur, se placer dans le dossier \texttt{/server} et exécuter la commande \texttt{npm start} dans un terminal. Cela lancera le serveur à l'adresse \url{http://localhost:4000} par défaut.
