@@ -5,8 +5,11 @@ import './DemandeInfos.css';
 
 function DemandeInfos({ user, getDemande, getUser}) {
   const handleAccept = async () => {
+    console.log('Bouton accepter demande cliqué');
     await axios.patch(`http://localhost:4000/api/user/verifie/${user._id}`)
       .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
         getDemande();
         getUser();
       })
@@ -14,8 +17,11 @@ function DemandeInfos({ user, getDemande, getUser}) {
   };
 
   const handleDeny = async () => {
+    console.log('Bouton refuser demande cliqué');
     await axios.delete(`http://localhost:4000/api/user/${user._id}`)
       .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
         getDemande();
       })
       .catch((err) => console.log(err));

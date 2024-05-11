@@ -22,7 +22,11 @@ function Search(props) {
 
   const getUserList = async () => {
     await axios.post('http://localhost:4000/api/user/search', { "text": text })
-      .then((res) => setUserList(res.data))
+      .then((res) => {
+        console.log('Réponse serveur pour les users: ');
+        console.log(res.data);
+        setUserList(res.data);
+      })
       .catch((err) => console.log(err));
   }
 
@@ -32,13 +36,18 @@ function Search(props) {
         "startDate": startDate,
         "endDate": endDate
       })
-      .then((res) => setMessageList(res.data))
+      .then((res) => {
+        console.log('Réponse serveur pour les messages : ');
+        console.log(res.data);
+        setMessageList(res.data);
+      })
       .catch((err) => console.log(err));
   }
 
 
   const handleSearch = async () => {
     if (text){
+      console.log('Bouton rechercher cliqué');
       toggleSearchResult();
       await getUserList();
       await getMessageList();

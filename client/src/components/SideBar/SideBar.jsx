@@ -15,14 +15,20 @@ function SideBar(props) {
   };
 
   const getForumList = async () => {
+    console.log('Chargement de la liste des forums');
     await axios.get('http://localhost:4000/api/forum')
-      .then((res) => setForumList(res.data))
+      .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
+        setForumList(res.data);
+      })
       .catch((err) => console.log(err));
   }
 
-  const afficheForum = (forum) => {
+  const afficheForum = (forum, index) => {
+    console.log('Bouton affiche liste forums cliqué');
     if (forum.acces.includes(user.status)) {
-      return <Link to={`/forum/${forum._id}`}> {forum.name} </Link>;
+      return <Link key={index} to={`/forum/${forum._id}`}> {forum.name} </Link>;
     }
   }
 
@@ -43,7 +49,7 @@ function SideBar(props) {
         {showForumSubmenu && (
           <div className="submenu">
           {forumList.map((forum, index) => (
-            afficheForum(forum)
+            afficheForum(forum, index)
           ))}
           </div>
         )}

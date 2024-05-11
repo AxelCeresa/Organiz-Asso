@@ -18,15 +18,25 @@ function Forum(props) {
   let { id } = useParams();
 
   const getMessageList = async () => {
+    console.log('Chargement messages');
     setMessageList([]);
     await axios.get(`http://localhost:4000/api/message/forum/${id}`)
-      .then((res) => setMessageList(res.data))
+      .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
+        setMessageList(res.data);
+      })
       .catch((err) => console.log(err));
   };
 
   const getForum = async () => {
+    console.log('Chargement forum');
     await axios.get(`http://localhost:4000/api/forum/${id}`)
-      .then((res) => setForum(res.data))
+      .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
+        setForum(res.data);
+      })
       .catch((err) => {
         if (err.response.data.status === 400){
           window.location = '/notFound';

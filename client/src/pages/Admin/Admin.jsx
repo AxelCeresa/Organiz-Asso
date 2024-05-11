@@ -23,20 +23,35 @@ function Admin(props) {
   const [userList, setUserList] = useState([]);
 
   const getDemandeList = async () => {
+    console.log('Chargement des demandes');
     await axios.get('http://localhost:4000/api/user/verifie')
-      .then((res) => setDemandeList(res.data))
+      .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
+        setDemandeList(res.data);
+      })
       .catch((err) => console.log(err));
   }
 
   const getUserList = async () => {
+    console.log('Chargement des utilisateurs');
     await axios.get('http://localhost:4000/api/user')
-      .then((res) => setUserList(res.data))
+      .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
+        setUserList(res.data);
+      })
       .catch((err) => console.log(err));
   }
 
   const getForumList = async () => {
+    console.log('Chargement des forums');
     await axios.get('http://localhost:4000/api/forum')
-      .then((res) => setForumList(res.data))
+      .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
+        setForumList(res.data);
+      })
       .catch((err) => console.log(err));
   }
 
@@ -58,12 +73,15 @@ function Admin(props) {
 
 
   function toggleForumList() {
+    console.log('Bouton liste forums cliqué');
     setIsForumListOpen(!isForumListOpen);
   }
   function toggleUserList() {
+    console.log('Bouton liste utilisateurs cliqué');
     setIsUserListOpen(!isUserListOpen);
   }
   function toggleDemandeList() {
+    console.log('Bouton liste demandes cliqué');
     setIsDemandeListOpen(!isDemandeListOpen);
   }
 

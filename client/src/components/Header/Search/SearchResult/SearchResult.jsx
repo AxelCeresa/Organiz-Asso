@@ -7,6 +7,10 @@ import './SearchResult.css';
 function SearchResult({ isOpen, onClose, userList, messageList }) {
   if (!isOpen) return null;
 
+  const handleClick = () => {
+    console.log('Lien vers profil utilisateur cliqué');
+  }
+
   return (
     <div className="search-result-overlay">
       <div className="search-result-container">
@@ -20,12 +24,12 @@ function SearchResult({ isOpen, onClose, userList, messageList }) {
           <div className='search-result-data'>
             <div className='users'>
               {userList.map((user, index) => (
-                <p><Link to={`/profile/${user._id}`}> <b>{user.login}</b> </Link></p>
+                <p><Link key={index} to={`/profile/${user._id}`} onClick={handleClick}> <b>{user.login}</b> </Link></p>
               ))}
             </div>
             <div className='messages'>
               {messageList.map((message, index) => (
-                <Message message={message} />
+                <Message key={index} message={message} />
               ))}
             </div>
           </div>

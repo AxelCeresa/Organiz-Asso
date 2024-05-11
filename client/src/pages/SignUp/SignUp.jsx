@@ -13,6 +13,7 @@ function SignUp(props) {
   const [error, setError] = useState('');
 
   const handleSignUp = (e) => {
+    console.log("Bouton m'inscrire cliqué");
     e.preventDefault();
 
     if (pass1 !== pass2){
@@ -26,7 +27,11 @@ function SignUp(props) {
           "login": login,
           "password": pass1
         })
-        .then((res) => window.location = '/login')
+        .then((res) => {
+          console.log('Réponse server : ');
+          console.log(res.data);
+          window.location = '/login';
+        })
         .catch((err) => {
           if (err.response.status === 409) {
             setError(err.response.data.message);

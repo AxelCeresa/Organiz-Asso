@@ -20,10 +20,13 @@ function ForumInfos({ forum, getForum }) {
   };
 
   const handleConfirm = async () => {
+    console.log('Bouton confirmation edit cliqué');
     setIsEditing(false);
     if (acces !== editedAccess) {
       await axios.patch(`http://localhost:4000/api/forum/acces/${forum._id}`, { acces: editedAccess })
         .then((res) => {
+          console.log('Réponse server : ');
+          console.log(res.data);
           setAcces(editedAccess);
           setError('');
           getForum();
@@ -40,6 +43,8 @@ function ForumInfos({ forum, getForum }) {
     if (name !== editedName) {
       await axios.patch(`http://localhost:4000/api/forum/name/${forum._id}`, { name: editedName })
         .then((res) => {
+          console.log('Réponse server : ');
+          console.log(res.data);
           setName(editedName);
           setError('');
           getForum();
@@ -63,8 +68,11 @@ function ForumInfos({ forum, getForum }) {
 
 
   const handleDelete = async () => {
+    console.log('Bouton supprimer cliqué');
     await axios.delete(`http://localhost:4000/api/forum/${forum._id}`)
       .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
         setError('');
         getForum();
       })

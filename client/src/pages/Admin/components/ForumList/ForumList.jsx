@@ -20,6 +20,7 @@ function ForumList({ isOpen, onClose, forumList, getForumList }) {
   };
 
   const handleSubmit = async (e) => {
+    console.log('Bouton créer nouveau forum cliqué');
     e.preventDefault();
 
     if (!forumName || !access){
@@ -32,6 +33,8 @@ function ForumList({ isOpen, onClose, forumList, getForumList }) {
       "acces": access
     })
       .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
         setForumName('');
         setAccess([]);
         setIsCreateForum(false);

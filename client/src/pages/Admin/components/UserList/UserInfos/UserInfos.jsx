@@ -19,12 +19,15 @@ function UserInfos({ user, getUser }) {
   };
 
   const handleConfirm = async () => {
+    console.log('Bouton confirmation edit cliqué');
     setIsEditing(false);
     if (status === editedStatus) {
       setError('');
     } else {
       await axios.patch(`http://localhost:4000/api/user/status/${user._id}`, { status: editedStatus })
         .then((res) => {
+          console.log('Réponse server : ');
+          console.log(res.data);
           setStatus(editedStatus);
           setError('');
           getUser();
@@ -40,8 +43,11 @@ function UserInfos({ user, getUser }) {
 
 
   const handleDelete = async () => {
+    console.log('Bouton delete cliqué');
     await axios.delete(`http://localhost:4000/api/user/${user._id}`)
       .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
         setError('');
         getUser();
       })

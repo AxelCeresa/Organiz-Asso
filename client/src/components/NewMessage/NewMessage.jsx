@@ -11,6 +11,7 @@ function NewMessage({ forumId, getMessageList }) {
   const user = useContext(UserContext);
 
   const handleSubmit = async () => {
+    console.log('Bouton envoyer message cliqué');
     await axios.put(`http://localhost:4000/api/message/`, {
       "forumId": forumId,
       "userId": user._id,
@@ -18,6 +19,8 @@ function NewMessage({ forumId, getMessageList }) {
       "text": messageContent
     })
       .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
         setMessageContent('');
         getMessageList();
       })

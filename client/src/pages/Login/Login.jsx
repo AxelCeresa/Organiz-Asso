@@ -10,12 +10,17 @@ function Login (props) {
 
 
   const handleLogin = async (e) => {
+    console.log('Bouton connexion cliqué');
     e.preventDefault();
     await axios.post('http://localhost:4000/api/user/login', {
       "login": login,
       "password": password
     }, { withCredentials: true, credentials: 'include' })
-      .then((res) => { window.location = '/forum/6602f9c2391f27f96e5f84e4' })
+      .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
+        window.location = '/forum/6602f9c2391f27f96e5f84e4';
+      })
       .catch((err) => {
         if (err.response.status === 403) {
           setError(err.response.data.message);

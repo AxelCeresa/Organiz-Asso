@@ -20,13 +20,17 @@ function Comment({ comment, getCommentList }) {
   const handleEdit = () => {
     setIsEditing(true);
     setEditedText(text);
+    console.log('Bouton Edit cliqué');
   };
 
   const handleEditSubmit = async () => {
+    console.log('Bouton envoyé cliqué');
     setIsEditing(false);
     if (text !== editedText) {
       await axios.patch(`http://localhost:4000/api/comment/${comment._id}`, { text: editedText })
         .then((res) => {
+          console.log('Réponse server : ');
+          console.log(res.data);
           setText(editedText);
           setIsModified(true);
           getCommentList();
@@ -36,8 +40,13 @@ function Comment({ comment, getCommentList }) {
   };
 
   const handleDelete = async () => {
+    console.log('Bouton delete cliqué');
     await axios.delete(`http://localhost:4000/api/comment/${comment._id}`)
-      .then((res) => getCommentList())
+      .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
+        getCommentList();
+      })
       .catch((err) => console.log(err));
   };
 

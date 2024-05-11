@@ -9,7 +9,7 @@ import axios from 'axios';
 import userImg from '../../../assets/img/user-placeholder-image.png';
 import './Message.css'
 
-function Message({ message, getMessageList }) {
+  function Message({ message, getMessageList }) {
   const user = useContext(UserContext);
 
   const [commentList, setCommentList] = useState([]);
@@ -23,19 +23,23 @@ function Message({ message, getMessageList }) {
   const [isModified, setIsModified] = useState(message.modified);
 
   const handleEdit = () => {
+    console.log("Bouton d'édition cliqué");
     setIsEditing(true);
     setEditedText(text);
   };
 
   const toggleVisibility = () => {
+    console.log('Bouton commentaires cliqué');
     setIsVisible(!isVisible);
   };
 
   const toggleNewComment = () => {
+    console.log('Bouton nouveau commentaire cliqué');
     setIsNewCommentOpen(!isNewCommentOpen);
   };
 
   const handleCommentSubmit = async (messageContent) => {
+    console.log('Bouton envoyer commentaire cliqué');
     await axios.put(`http://localhost:4000/api/comment`, {
       "messageId": message._id,
       "userId": user._id,
@@ -43,6 +47,8 @@ function Message({ message, getMessageList }) {
       "text": messageContent
     })
       .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
         getCommentList();
         toggleNewComment();
       })
@@ -51,10 +57,13 @@ function Message({ message, getMessageList }) {
   };
 
   const handleEditSubmit = async () => {
+    console.log('Bouton envoyer edition cliqué');
     setIsEditing(false);
     if (text !== editedText) {
       await axios.patch(`http://localhost:4000/api/message/${message._id}`, { text: editedText })
         .then((res) => {
+          console.log('Réponse server : ');
+          console.log(res.data);
           setText(editedText);
           setIsModified(true);
           getMessageList();
@@ -64,15 +73,25 @@ function Message({ message, getMessageList }) {
   };
 
   const handleDelete = async () => {
+    console.log('Bouton delete cliqué');
     await axios.delete(`http://localhost:4000/api/message/${message._id}`)
-      .then((res) => getMessageList())
+      .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
+        getMessageList();
+      })
       .catch((err) => console.log(err));
   };
 
   const getCommentList = async () => {
+    console.log('Chargement des commentaires');
     setCommentList([]);
     await axios.get(`http://localhost:4000/api/comment/message/${message._id}`)
-      .then((res) => setCommentList(res.data))
+      .then((res) => {
+        console.log('Réponse server : ');
+        console.log(res.data);
+        setCommentList(res.data);
+      })
       .catch((err) => console.log(err));
   };
 
