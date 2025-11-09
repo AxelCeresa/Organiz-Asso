@@ -1,8 +1,8 @@
 # Organiz-Asso
 
 Projet de l'UE LU3IN017 - Technologies du Web.  
-Axel CERESA - 21103270  
-Daba KONE - 
+Axel CERESA  
+Daba KONE
   
 Frontend en React et Backend en NodeJs avec express.  
 Base de données avec MongoDB.
